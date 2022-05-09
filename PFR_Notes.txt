@@ -1,0 +1,170 @@
+Command to run if libraries not presently installed
+python -m pip install --user numpy scipy matplotlib
+Add resulting directory to $PATH through the guide:
+https://fabianlee.org/2021/12/23/vscode-add-a-directory-to-the-terminal-path/:~:text=From%20the%20main%20menu%2C%20go,integrated.
+
+For live graphs, look into matplotlib.pyplot.ion
+
+Introduction
+This file is a detailed design description of all of the PFR_*.py scripts I 
+made as my Honors project with Dr. Karim for CHE 3184.  These were a lot of fun 
+to make, and an exciting part of a series of chemical engineering applets I am 
+making to help make learning more intuitive.  
+
+This file is separated into the actual design of the files, and any issues I 
+noticed when I was creating and testing the scripts.  Those issues may be 
+updated in the future, and the files redesigned, but this is a starting point 
+in this process!
+
+
+Design:
+All of these scripts borrow from HW4Q1 for the reaction.  This reaction is only 
+augmented in PFR_Epsilon.py, where the coefficient of R in the reaction 
+equation is the subject of investigation, leading to the rate law also changing.
+
+Separate script for Isothermal Spacetime
+    PFR_Spacetime.py
+        Imports different libraries
+            scipy.integrate
+            matplotlib.pyplot
+            numpy
+        Variable inputs (to be implemented later)
+            k_f
+            k_r
+            c_A0
+            c_B0
+            Volume_total
+            volumetric_flow_low
+            volumetric_flow_high
+        Functions
+            deriv(Volume, F, volumetric_flowrate)
+            iterative(volumetric_flowrate)
+        Output
+            Graph showing the conversion through the reactor v. spacetime
+Separate script for Isothermal Temperature
+    PFR_Temp.py
+        Imports different libraries
+            scipy.integrate
+            matplotlib.pyplot
+            numpy
+            math
+        Variable inputs (to be implemented later)
+            Eaf
+            Ear
+            T0
+            k_f0
+            k_r0
+            Tstart
+            Tend
+            c_A0
+            c_B0
+            volumetric_flowrate
+            Volume_total
+        Functions
+            k_f_fun(T)
+            k_r_fun(T)
+            deriv(Volume, F, volumetric_flowrate)
+            iterative(volumetric_flowrate)
+        Output
+            Graph showing the isothermal conversion through the reactor v. 
+            temperature
+Separate script for Isothermal Epsilon
+    PFR_Epsilon.py
+        Imports different libraries
+            scipy.integrate
+            matplotlib.pyplot
+            numpy
+        Variable inputs (to be implemented later)
+            k_f
+            k_r
+            c_A0
+            c_B0
+            volumetric_flowrate
+            Volume_total
+            coefficient_start
+            coefficient_end
+        Functions
+            deriv(Volume, F, volumetric_flowrate)
+            iterative(volumetric_flowrate)
+        Output
+            Graph showing the conversion through the reactor v. 
+            coefficient of R
+Separate script for Adiabatic Operation
+    PFR_Adiabatic.py
+        Imports different libraries
+            scipy.integrate
+            matplotlib.pyplot
+            numpy
+        Variable inputs (to be implemented later)
+            delta_H_A
+            cp_A
+            delta_H_B
+            cp_B
+            delta_H_R
+            cp_R
+            Ea_f
+            Ea_r
+            T0
+            k_f0
+            k_r0
+            Tstart
+            c_A0
+            c_B0
+            c_R0
+            volumetric_flowrate
+            Volume_total
+        Functions
+            k_f_fun(T)
+            k_r_fun(T)
+            EnergyBalance(Volume, F)
+        Output
+            Graph showing the adiabatic conversion through the reactor v. 
+            temperature
+Separate script for Operation with Heat Exchanger
+    PFR_Heat_Exchanger.py
+        Imports different libraries
+            scipy.integrate
+            matplotlib.pyplot
+            math
+        Variable inputs (to be implemented later)
+            delta_H_A
+            cp_A
+            delta_H_B
+            cp_B
+            delta_H_R
+            cp_R
+            Ea_f
+            Ea_r
+            T0
+            k_f0
+            k_r0
+            U
+            A
+            T_A
+            Tstart
+            c_A0
+            c_B0
+            c_R0
+            volumetric_flowrate
+            Volume_total
+        Functions
+            k_f_fun(T)
+            k_r_fun(T)
+            EnergyBalance(Volume, F)
+        Output
+            Graph showing the conversion when using a heat exchangethrough the 
+            reactor v. temperature
+
+
+
+
+Issues
+    5/9/2022
+    Non-isothermal scripts currently only have one balance graphed, and I think 
+    that it is the energy balance, though I could be wrong.  It may be the mass 
+    balance currently being graphed, though the behavior is largely linear.
+        In the future, this can be remedied by working things out for a simpler 
+        case than the reversible situation.  When doing this mentally, I 
+        believe the balances are actually the mass balances, but then it calls 
+        to question are the two equivalent?  Is the energy balance separate, or 
+        is that taken into account in the differential equation?
