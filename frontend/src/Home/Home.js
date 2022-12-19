@@ -8,7 +8,7 @@ function Home() {
     const [getMessage, setGetMessage] = useState({})
 
     useEffect( () => {
-      axios.get('http://localhost:5000/flask/hello').then(response => {
+      axios.get('http://localhost:5000/home').then(response => {
         console.log("SUCCCESS", response)
         setGetMessage(response)
       }).catch(error => {

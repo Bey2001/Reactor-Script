@@ -13,5 +13,5 @@ api = Api(app)
 def serve(path):
     return send_from_directory(app.static_folder,'index.html')
 
-api.add_resource(HelloApiHandler, '/flask/hello')
+api.add_resource(HelloApiHandler, '/home')
 api.add_resource(CSTRAdiabaticApiHandler, '/cstr/adiabatic')

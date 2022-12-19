@@ -19,7 +19,7 @@ class CSTRAdiabatic extends Component {
         this.state = {
             values: {
                 lowerTemp: 300,
-                upperTemp: 500,
+                upperTemp: 1000,
                 cA: 30,
                 hfA: -35000,
                 cB: 30,
