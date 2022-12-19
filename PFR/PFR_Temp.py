@@ -193,7 +193,7 @@ x = [None] * num
 #For loop for iterative function
 for i in range(num):
     #Feed in the current temperature to be evaluated
-    iter = iterative(T_span[i], Volume_0, Volume_total)
+    iter = iterative(T_span[i])
     #Extract the conversion from the end
     x[i] = (iter[0][1] - iter[1][1])/iter[0][1]
 
@@ -205,5 +205,6 @@ plt.xlim(Tstart, Tend)
 plt.xlabel('Temperature (K)')
 plt.ylim(0, 1)
 plt.ylabel('Conversion')
+plt.title('PFR-Temperature')
 plt.grid()
 plt.show()
