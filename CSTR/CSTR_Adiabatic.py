@@ -2,7 +2,7 @@
 #   All other variables are assumed constant
 #   Activation energies assumed to be for simplicity's sake
 
-#Example from HW8Q5
+#Example from HW8Q5A
 # Elementary Liquid Phase Reaction (300 K)
 # A + B -> C
 # rate = 0.01*cA*cB
@@ -41,12 +41,15 @@ delta_H_C = -41000
 #   Specific heat of C - (cal/mol)
 cp_C = 30
 
+
+
+### Permanent Constants
 # Forward Activation Energy - cal/mol
 Ea_f = 10000
 # Temperature for original k values - K
 T0 = 300
 # Rate Constant at T0 K - (m^3/mol.s)
-k_f0 = 0.00001
+k_f0 = 0.00001 # 0.01 L/mol.s
 
 #Initial Temperature - K
 Tstart = 300
@@ -54,13 +57,13 @@ Tstart = 300
 Tend = 500
 
 #Total Concentration - (mol/m^3)
-c_T0 = 100
+c_T0 = 100 # 0.1 M
 
 #Volume of the reactor - m^3
-Volume = 0.350
+Volume = 0.350 #350 L
 
 #Initial Volumetric Flowrate - (m^3/s)
-volumetric_flowrate = 0.002
+volumetric_flowrate = 0.002 #2 L/s
 
 
 

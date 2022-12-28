@@ -3,6 +3,8 @@ import Snackbar from "@mui/material/Snackbar";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 
+import axios from 'axios'
+
 import ReactorStack from '../Components/ReactorStack/ReactorStack';
 
 // Have each CSTR* be a stateful component with the specific fields necessary being stored.  This should allow editing using the old data as a basis
@@ -17,26 +19,29 @@ class CSTRTemp extends Component {
         this.state = {
             values: {
                 lowerTemp: 300,
-                upperTemp: 500,
-                eaf: 30,
-                k: -35000,
-                tRef: 30,
+                upperTemp: 1000,
+                eA: 10000,
+                k: 0.01,
+                tRef: 300,
             },
             errors: {
                 lowerTemp: true,
                 upperTemp: true,
-                eaf: true,
+                eA: true,
                 k: true,
                 tRef: true,
             },
             errorMessages: {
                 lowerTemp: '',
                 upperTemp: '',
-                eaf: '',
+                eA: '',
                 k: '',
                 tRef: '',
             },
-            error: false
+            error: false,
+            image: '',
+            posted: false,
+            loading: false
         }
         /***************************************
          * Static fields, to be changed by dev *
@@ -45,17 +50,17 @@ class CSTRTemp extends Component {
         this.bounds = {
             lowerTemp: 300,
             upperTemp: 1000,
-            eaf: {
-                min: 10,
-                max: 100
+            eA: {
+                min: 0,
+                max: 100000
             },
             k: {
-                min: -50000,
-                max: 50000
+                min: 0,
+                max: 1
             },
             tRef: {
-                min: 10,
-                max: 100
+                min: 300,
+                max: 1000
             }
         }
        
@@ -74,9 +79,9 @@ class CSTRTemp extends Component {
             {
                 numVals: 1,
                 title: "Activation Energy",
-                onChange: this.changeEAF.bind(this),
-                adorn: "J/mol",
-                shorthand: 'eaf'
+                onChange: this.changeEA.bind(this),
+                adorn: "cal/mol",
+                shorthand: 'eA'
             },
             {
                 numVals: 1,
@@ -193,19 +198,19 @@ class CSTRTemp extends Component {
         }
     }
 
-    changeEAF(event) {
-        var obj = this.validateValue(event, this.bounds.eaf.min, this.bounds.eaf.max)
+    changeEA(event) {
+        var obj = this.validateValue(event, this.bounds.eA.min, this.bounds.eA.max)
         if (obj.error) {
             this.setState((prevState) => 
             ({
                 ...prevState,
                 errors: {
                     ...prevState.errors,
-                    eaf: obj.error
+                    eA: obj.error
                 },
                 errorMessages: {
                     ...prevState.errors,
-                    eaf: obj.errorMessage
+                    eA: obj.errorMessage
                 }
             }));
         }
@@ -215,15 +220,15 @@ class CSTRTemp extends Component {
                 ...prevState,
                 values: {
                     ...prevState.values,
-                    eaf: obj.value
+                    eA: obj.value
                 },
                 errors: {
                     ...prevState.errors,
-                    eaf: obj.error
+                    eA: obj.error
                 },
                 errorMessages: {
                     ...prevState.errors,
-                    eaf: obj.errorMessage
+                    eA: obj.errorMessage
                 }
             }));
         }
@@ -305,56 +310,129 @@ class CSTRTemp extends Component {
         let openSnackbar = false
         for (const bool in this.state.errors) {
             openSnackbar = openSnackbar || this.state.errors[bool]
-            console.log(this.state.errors[bool])
         }
-
-        this.setState((prevState) => ({
-            ...prevState,
-            error: openSnackbar
-        }))
 
         // If no error exists, send the fields to the backend
         //      Need to also retrieve the URL and store it,
         //          then use it to render the appropriate graph
         if (!openSnackbar) {
+            let lowerTemp = '' + this.state.values.lowerTemp
+            let upperTemp = '' + this.state.values.upperTemp
+            let eA = '' + this.state.values.eA
+            let k = '' + this.state.values.k
+            let tRef = '' + this.state.values.tRef
 
+            axios
+                .get('http://localhost:5000/cstr/temp',
+                {
+                    params: {
+                        lowerTemp: lowerTemp,
+                        upperTemp: upperTemp,
+                        eA: eA,
+                        k: k,
+                        tRef: tRef
+                    },
+                    responseType: 'blob'
+                })
+                .then(response => {
+                    this.setState((prevState) => ({
+                        ...prevState,
+                        error: false,
+                        image: response.data,
+                        loading: true,
+                        posted: true
+                    }),
+                        () => {
+                            this.setState({loading: false})
+                        }
+                    )
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        }
+        else {
+            this.setState((prevState) => ({
+                ...prevState,
+                error: openSnackbar
+            }))
         }
     }
 
     handleCloseSnackbar = () => this.setState({error: false})
 
+    handleCloseImage = () => this.setState({
+        image: '',
+        loading: false,
+        posted: false
+    })
+
     render() {
         return (
             <div>
-                <h1>CSTR - Temperature</h1>
-                <ReactorStack 
-                    fields={this.fields}
-                    errors={this.state.errors}
-                    errorMessages={this.state.errorMessages}
-                    handleCalculate={this.handleCalculate.bind(this)}
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        height: '100vh'
-                    }}
-                />
-                {/* Snackbar to warn the user of existing errors */}
-                <Snackbar
-                    open={this.state.error}
-                    message="Input errors exist"
-                    onClose={this.handleCloseSnackbar}
-                    action={(
-                    <IconButton
-                        size="small"
-                        aria-label="close"
-                        color="inherit"
-                        onClick={this.handleCloseSnackbar}
-                      >
-                        <CloseIcon fontSize="small" />
-                      </IconButton>
-                    )}
-                />
+                <h1>CSTR - Temperature Manipulation</h1>
+                <p>
+                    This page is for simulating the reaction
+                    A + B &#10230; C
+                    in an isothermal CSTR at various temperatures.
+                </p>
+                {!this.state.posted ? 
+                    (<React.Fragment>
+                        <ReactorStack 
+                            fields={this.fields}
+                            errors={this.state.errors}
+                            errorMessages={this.state.errorMessages}
+                            handleCalculate={this.handleCalculate.bind(this)}
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                height: '100vh'
+                            }}
+                            values={this.state.values}
+                        />
+                        {/* Snackbar to warn the user of existing errors */}
+                        <Snackbar
+                            open={this.state.error}
+                            message="Input errors exist"
+                            onClose={this.handleCloseSnackbar}
+                            action={(
+                            <IconButton
+                                size="small"
+                                aria-label="close"
+                                color="inherit"
+                                onClick={this.handleCloseSnackbar}
+                            >
+                                <CloseIcon fontSize="small" />
+                            </IconButton>
+                            )}
+                        />
+                    </React.Fragment>)
+                    :
+                    (
+                    <React.Fragment>
+                        <IconButton
+                                size="small"
+                                aria-label="close"
+                                color="inherit"
+                                onClick={this.handleCloseImage}
+                            >
+                                <CloseIcon fontSize="small" />
+                        </IconButton>
+                        {
+                            this.state.loading ? 
+                            (
+                                <h1>Loading...</h1>
+                            )
+                            :
+                            (<img 
+                                src={URL.createObjectURL(this.state.image)}
+                                alt="plot.png"
+                            />)
+                        }
+                    </React.Fragment> 
+                    )
+                }
             </div>
         );
     }

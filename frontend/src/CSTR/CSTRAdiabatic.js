@@ -20,14 +20,11 @@ class CSTRAdiabatic extends Component {
             values: {
                 lowerTemp: 300,
                 upperTemp: 1000,
-                cA: 30,
-                hfA: -35000,
-                cB: 30,
-                hfB: -35000,
-                cC: 30,
-                hfC: -41000,
-                // eAF: 10000,
-                // k300: 0.00001,
+                cA: 0,
+                hfA: 0,
+                cB: 0,
+                hfB: 0,
+                hfC: 0,
             },
             errors: {
                 lowerTemp: true,
@@ -36,10 +33,7 @@ class CSTRAdiabatic extends Component {
                 hfA: true,
                 cB: true,
                 hfB: true,
-                cC: true,
                 hfC: true,
-                // eAF: true,
-                // k300: true
             },
             errorMessages: {
                 lowerTemp: '',
@@ -48,12 +42,12 @@ class CSTRAdiabatic extends Component {
                 hfA: '',
                 cB: '',
                 hfB: '',
-                cC: '',
                 hfC: '',
-                // eAF: '',
-                // k300: ''
             },
-            error: false
+            error: false,
+            image: '',
+            posted: false,
+            loading: false
         }
         /***************************************
          * Static fields, to be changed by dev *
@@ -85,15 +79,7 @@ class CSTRAdiabatic extends Component {
             hfC: {
                 min: -50000,
                 max: 50000
-            },
-            // eAF: {
-            //     min: 10000,
-            //     max: 100000
-            // },
-            // k300: {
-            //     min: 0.00001,
-            //     max: 100
-            // }
+            }
         }
        
         // Constant fields for customizing the form fields on the web app
@@ -106,64 +92,43 @@ class CSTRAdiabatic extends Component {
                 onChange2: this.changeUpperTemp.bind(this),
                 adorn: "K",
                 shorthand1: 'lowerTemp',
-                shorthand2: 'upperTemp'
+                shorthand2: 'upperTemp',
             },
             {
                 numVals: 1,
                 title: "Specific Heat of A",
                 onChange: this.changeCA.bind(this),
                 adorn: "cal/mol.K",
-                shorthand: 'cA'
+                shorthand: 'cA',
             },
             {
                 numVals: 1,
                 title: 'Heat of Formation of A',
                 onChange: this.changeHfA.bind(this),
                 adorn: 'cal/mol',
-                shorthand: 'hfA'
+                shorthand: 'hfA',
             },
             {
                 numVals: 1,
                 title: "Specific Heat of B",
                 onChange: this.changeCB.bind(this),
                 adorn: "cal/mol.K",
-                shorthand: 'cB'
+                shorthand: 'cB',
             },
             {
                 numVals: 1,
                 title: 'Heat of Formation of B',
                 onChange: this.changeHfB.bind(this),
                 adorn: 'cal/mol',
-                shorthand: 'hfB'
-            },
-            {
-                numVals: 1,
-                title: "Specific Heat of C",
-                onChange: this.changeCC.bind(this),
-                adorn: "cal/mol.K",
-                shorthand: 'cC'
+                shorthand: 'hfB',
             },
             {
                 numVals: 1,
                 title: 'Heat of Formation of C',
                 onChange: this.changeHfC.bind(this),
                 adorn: 'cal/mol',
-                shorthand: 'hfC'
-            },
-            // {
-            //     numVals: 1,
-            //     title: 'Activation Energy',
-            //     onChange: this.changeEAF.bind(this),
-            //     adorn: 'cal/mol',
-            //     shorthand: 'eAF'
-            // },
-            // {
-            //     numVals: 1,
-            //     title: 'Rate Constant (at 300K)',
-            //     onChange: this.changeK300.bind(this),
-            //     adorn: 'm^3/mol.s',
-            //     shorthand: 'k300'
-            // }
+                shorthand: 'hfC',
+            }
         ]
     }
 
@@ -409,42 +374,6 @@ class CSTRAdiabatic extends Component {
         }
     }
 
-    changeCC(event) {
-        var obj = this.validateValue(event, this.bounds.cC.min, this.bounds.cC.max)
-        if (obj.error) {
-            this.setState((prevState) => 
-            ({
-                ...prevState,
-                errors: {
-                    ...prevState.errors,
-                    cC: obj.error
-                },
-                errorMessages: {
-                    ...prevState.errors,
-                    cC: obj.errorMessage
-                }
-            }));
-        }
-        else {
-            this.setState((prevState) => 
-            ({
-                ...prevState,
-                values: {
-                    ...prevState.values,
-                    cC: obj.value
-                },
-                errors: {
-                    ...prevState.errors,
-                    cC: obj.error
-                },
-                errorMessages: {
-                    ...prevState.errors,
-                    cC: obj.errorMessage
-                }
-            }));
-        }
-    }
-
     changeHfC(event) {
         var obj = this.validateValue(event, this.bounds.hfC.min, this.bounds.hfC.max)
         if (obj.error) {
@@ -487,14 +416,10 @@ class CSTRAdiabatic extends Component {
             openSnackbar = openSnackbar || this.state.errors[bool]
         }
 
-        this.setState((prevState) => ({
-            ...prevState,
-            error: openSnackbar
-        }))
+        if (this.state.values.hfC - this.state.values.hfA - this.state.values.hfB >= 0) {
+            openSnackbar = true
+        }
 
-        // If no error exists, send the fields to the backend
-        //      Need to also retrieve the URL and store it,
-        //          then use it to render the appropriate graph
         if (!openSnackbar) {
             let lowerTemp = '' + this.state.values.lowerTemp
             let upperTemp = '' + this.state.values.upperTemp
@@ -502,7 +427,6 @@ class CSTRAdiabatic extends Component {
             let hfA = '' + this.state.values.hfA
             let cB = '' + this.state.values.cB
             let hfB=  '' + this.state.values.hfB
-            let cC = '' + this.state.values.cC
             let hfC = '' + this.state.values.hfC
 
             axios
@@ -515,54 +439,108 @@ class CSTRAdiabatic extends Component {
                         hfA: hfA,
                         cB: cB,
                         hfB: hfB,
-                        cC: cC,
                         hfC: hfC
-                    }
+                    },
+                    responseType: 'blob'
                 })
                 .then(response => {
-                    console.log("SUCCESS", response)
-                    // Find way to render the backend
+                    this.setState((prevState) => ({
+                        ...prevState,
+                        error: false,
+                        image: response.data,
+                        loading: true,
+                        posted: true
+                    }),
+                        () => {
+                            this.setState({loading: false})
+                        }
+                    )
                 })
                 .catch(error => {
                     console.log(error)
                 })
         }
+        else {
+            this.setState((prevState) => ({
+                ...prevState,
+                error: openSnackbar
+            }))
+        }
     }
 
     handleCloseSnackbar = () => this.setState({error: false})
 
+    handleCloseImage = () => this.setState({
+        image: '',
+        loading: false,
+        posted: false
+    })
+
     render() {
         return (
             <div>
-                <h1>CSTR - Adiabatic</h1>
-                <ReactorStack 
-                    fields={this.fields}
-                    errors={this.state.errors}
-                    errorMessages={this.state.errorMessages}
-                    handleCalculate={this.handleCalculate.bind(this)}
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        height: '100vh'
-                    }}
-                />
-                {/* Snackbar to warn the user of existing errors */}
-                <Snackbar
-                    open={this.state.error}
-                    message="Input errors exist"
-                    onClose={this.handleCloseSnackbar}
-                    action={(
-                    <IconButton
-                        size="small"
-                        aria-label="close"
-                        color="inherit"
-                        onClick={this.handleCloseSnackbar}
-                      >
-                        <CloseIcon fontSize="small" />
-                      </IconButton>
-                    )}
-                />
+                <h1>CSTR - Adiabatic Operation</h1>
+                <p>
+                    This page is for simulating the reaction
+                    A + B &#10230; C
+                    in an Adiabatic CSTR.
+                </p>
+
+                {!this.state.posted ? 
+                    (<React.Fragment>
+                        <ReactorStack 
+                            fields={this.fields}
+                            values={this.state.values}
+                            errors={this.state.errors}
+                            errorMessages={this.state.errorMessages}
+                            handleCalculate={this.handleCalculate.bind(this)}
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                height: '100vh'
+                            }}
+                        />
+                        {/* Snackbar to warn the user of existing errors */}
+                        <Snackbar
+                            open={this.state.error}
+                            message="Input errors exist"
+                            onClose={this.handleCloseSnackbar}
+                            action={(
+                            <IconButton
+                                size="small"
+                                aria-label="close"
+                                color="inherit"
+                                onClick={this.handleCloseSnackbar}
+                            >
+                                <CloseIcon fontSize="small" />
+                            </IconButton>
+                            )}
+                        />
+                    </React.Fragment>)
+                    :
+                    (<React.Fragment>
+                        <IconButton
+                                size="small"
+                                aria-label="close"
+                                color="inherit"
+                                onClick={this.handleCloseImage}
+                            >
+                                <CloseIcon fontSize="small" />
+                        </IconButton>
+                        {
+                            this.state.loading ? 
+                            (
+                                <h1>Loading...</h1>
+                            )
+                            :
+                            (<img 
+                                src={URL.createObjectURL(this.state.image)}
+                                alt="plot.png"
+                            />)
+                        }
+                    </React.Fragment>)
+                }
             </div>
         );
     }

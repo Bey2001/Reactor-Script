@@ -3,6 +3,8 @@ import Snackbar from "@mui/material/Snackbar";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 
+import axios from 'axios'
+
 import ReactorStack from '../Components/ReactorStack/ReactorStack';
 
 // Have each CSTR* be a stateful component with the specific fields necessary being stored.  This should allow editing using the old data as a basis
@@ -16,18 +18,24 @@ class CSTRSpacetime extends Component {
         // Dynamic fields (subject to change, hence being in state)
         this.state = {
             values: {
-                volume: 30,
-                flowrate: -35000,
+                volume: 0.350,
+                lowerFlowrate: 0.00001,
+                upperFlowrate: 10
             },
             errors: {
                 volume: true,
-                flowrate: true,
+                lowerFlowrate: true,
+                upperFlowrate: true
             },
             errorMessages: {
                 volume: '',
-                flowrate: '',
+                lowerFlowrate: '',
+                upperFlowrate: ''
             },
-            error: false
+            error: false,
+            image: '',
+            posted: false,
+            loading: false
         }
         /***************************************
          * Static fields, to be changed by dev *
@@ -35,13 +43,11 @@ class CSTRSpacetime extends Component {
 
         this.bounds = {
             volume: {
-                min: 10,
-                max: 100
+                min: 0,
+                max: 10
             },
-            flowrate: {
-                min: -50000,
-                max: 50000
-            },
+            lowerFlowrate: 1,
+            upperFlowrate: 10000
         }
        
         // Constant fields for customizing the form fields on the web app
@@ -54,17 +60,20 @@ class CSTRSpacetime extends Component {
                 shorthand: 'volume'
             },
             {
-                numVals: 1,
-                title: 'Volumetric Flowrate',
-                onChange: this.changeFlowrate.bind(this),
-                adorn: 'm^2',
-                shorthand: 'flowrate'
+                numVals: 2,
+                title1: 'Lower Vol. Flowrate',
+                title2: 'Upper Vol. Flowrate',
+                onChange1: this.changeLowerFlowrate.bind(this),
+                onChange2: this.changeUpperFlowrate.bind(this),
+                adorn: 'm^3/s',
+                shorthand1: 'lowerFlowrate',
+                shorthand2: 'upperFlowrate'
             }
         ]
     }
 
     validateValue(event, lowerBound, upperBound) {
-        // Get the event.target's value as flowrate number
+        // Get the event.target's value as lowerFlowrate number
         let value = + event.target.value
         // Default error setting
         let newError = false
@@ -125,19 +134,19 @@ class CSTRSpacetime extends Component {
         }
     }
 
-    changeFlowrate(event) {
-        var obj = this.validateValue(event, this.bounds.flowrate.min, this.bounds.flowrate.max)
+    changeLowerFlowrate(event) {
+        var obj = this.validateValue(event, this.bounds.lowerFlowrate.min, this.state.values.upperFlowrate)
         if (obj.error) {
             this.setState((prevState) => 
             ({
                 ...prevState,
                 errors: {
                     ...prevState.errors,
-                    flowrate: obj.error
+                    lowerFlowrate: obj.error
                 },
                 errorMessages: {
                     ...prevState.errors,
-                    flowrate: obj.errorMessage
+                    lowerFlowrate: obj.errorMessage
                 }
             }));
         }
@@ -147,15 +156,51 @@ class CSTRSpacetime extends Component {
                 ...prevState,
                 values: {
                     ...prevState.values,
-                    flowrate: obj.value
+                    lowerFlowrate: obj.value
                 },
                 errors: {
                     ...prevState.errors,
-                    flowrate: obj.error
+                    lowerFlowrate: obj.error
                 },
                 errorMessages: {
                     ...prevState.errors,
-                    flowrate: obj.errorMessage
+                    lowerFlowrate: obj.errorMessage
+                }
+            }));
+        }
+    }
+
+    changeUpperFlowrate(event) {
+        var obj = this.validateValue(event, this.state.values.lowerFlowrate, this.bounds.upperFlowrate)
+        if (obj.error) {
+            this.setState((prevState) => 
+            ({
+                ...prevState,
+                errors: {
+                    ...prevState.errors,
+                    upperFlowrate: obj.error
+                },
+                errorMessages: {
+                    ...prevState.errors,
+                    upperFlowrate: obj.errorMessage
+                }
+            }));
+        }
+        else {
+            this.setState((prevState) => 
+            ({
+                ...prevState,
+                values: {
+                    ...prevState.values,
+                    upperFlowrate: obj.value
+                },
+                errors: {
+                    ...prevState.errors,
+                    upperFlowrate: obj.error
+                },
+                errorMessages: {
+                    ...prevState.errors,
+                    upperFlowrate: obj.errorMessage
                 }
             }));
         }
@@ -165,56 +210,122 @@ class CSTRSpacetime extends Component {
         let openSnackbar = false
         for (const bool in this.state.errors) {
             openSnackbar = openSnackbar || this.state.errors[bool]
-            console.log(this.state.errors[bool])
         }
 
-        this.setState((prevState) => ({
-            ...prevState,
-            error: openSnackbar
-        }))
-
-        // If no error exists, send the fields to the backend
-        //      Need to also retrieve the URL and store it,
-        //          then use it to render the appropriate graph
         if (!openSnackbar) {
+            let volume = this.state.values.volume
+            let lowerFlowrate = this.state.values.lowerFlowrate
+            let upperFlowrate = this.state.values.upperFlowrate
 
+            axios
+                .get('http://localhost:5000/cstr/spacetime',
+                {
+                    params: {
+                        volume: volume,
+                        lowerFlowrate: lowerFlowrate,
+                        upperFlowrate: upperFlowrate
+                    },
+                    responseType: 'blob'
+                })
+                .then(response => {
+                    this.setState((prevState) => ({
+                        ...prevState,
+                        error: false,
+                        image: response.data,
+                        loading: true,
+                        posted: true
+                    }),
+                        () => {
+                            this.setState({loading: false})
+                        }
+                    )
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        }
+        else {
+            this.setState((prevState) => ({
+                ...prevState,
+                error: openSnackbar
+            }))
         }
     }
 
     handleCloseSnackbar = () => this.setState({error: false})
 
+    handleCloseImage = () => this.setState({
+        image: '',
+        loading: false,
+        posted: false
+    })
+
     render() {
         return (
             <div>
-                <h1>CSTR - Spacetime</h1>
-                <ReactorStack 
-                    fields={this.fields}
-                    errors={this.state.errors}
-                    errorMessages={this.state.errorMessages}
-                    handleCalculate={this.handleCalculate.bind(this)}
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        height: '100vh'
-                    }}
-                />
-                {/* Snackbar to warn the user of existing errors */}
-                <Snackbar
-                    open={this.state.error}
-                    message="Input errors exist"
-                    onClose={this.handleCloseSnackbar}
-                    action={(
-                    <IconButton
-                        size="small"
-                        aria-label="close"
-                        color="inherit"
-                        onClick={this.handleCloseSnackbar}
-                      >
-                        <CloseIcon fontSize="small" />
-                      </IconButton>
-                    )}
-                />
+                <h1>CSTR - Spacetime Manipulation</h1>
+                <p>
+                    This page is for simulating the reaction
+                    A + B &#10230; C
+                    in a CSTR with varying spacetime.
+                </p>
+                {!this.state.posted ? 
+                    (<React.Fragment>
+                        <ReactorStack 
+                            fields={this.fields}
+                            errors={this.state.errors}
+                            errorMessages={this.state.errorMessages}
+                            handleCalculate={this.handleCalculate.bind(this)}
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                height: '100vh'
+                            }}
+                            values={this.state.values}
+                        />
+                        {/* Snackbar to warn the user of existing errors */}
+                        <Snackbar
+                            open={this.state.error}
+                            message="Input errors exist"
+                            onClose={this.handleCloseSnackbar}
+                            action={(
+                            <IconButton
+                                size="small"
+                                aria-label="close"
+                                color="inherit"
+                                onClick={this.handleCloseSnackbar}
+                            >
+                                <CloseIcon fontSize="small" />
+                            </IconButton>
+                            )}
+                        />
+                    </React.Fragment>)
+                    :
+                    (
+                    <React.Fragment>
+                        <IconButton
+                                size="small"
+                                aria-label="close"
+                                color="inherit"
+                                onClick={this.handleCloseImage}
+                            >
+                                <CloseIcon fontSize="small" />
+                        </IconButton>
+                        {
+                            this.state.loading ? 
+                            (
+                                <h1>Loading...</h1>
+                            )
+                            :
+                            (<img 
+                                src={URL.createObjectURL(this.state.image)}
+                                alt="plot.png"
+                            />)
+                        }
+                    </React.Fragment> 
+                    )
+                }
             </div>
         );
     }

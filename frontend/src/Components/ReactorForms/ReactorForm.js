@@ -23,6 +23,7 @@ function ReactorForm(props) {
                         label={row.title}
                         error={props.errors[row.shorthand]}
                         errorMessage={props.errorMessages[row.shorthand]}
+                        value={props.values[row.shorthand]}
                     />
                 ) 
                 :
@@ -38,6 +39,8 @@ function ReactorForm(props) {
                         error2={props.errors[row.shorthand2]}
                         errorMessage1={props.errorMessages[row.shorthand1]}
                         errorMessage2={props.errorMessages[row.shorthand2]}
+                        value1={props.values[row.shorthand1]}
+                        value2={props.values[row.shorthand2]}
                     />
                     // <OneFieldForm
                     //     title={row.title}

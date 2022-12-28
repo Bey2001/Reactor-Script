@@ -18,7 +18,7 @@ function Home() {
   
 
     return (
-        <header className="App-header">
+        <header className="Home-header">
             <img src={logo} className="Home-logo" alt="logo" />
             <h1>
                 ChE - Suite Home
@@ -28,6 +28,9 @@ function Home() {
                 :
                 <h3>Loading</h3>}
             </div>
+            <h2>This app is Reactor Simulation Software for 
+              <br/> Virginia Tech's Department of Chemical Engineering 
+              <br/> Reactor Analysis and Design course.</h2>
         </header>
     );
 }

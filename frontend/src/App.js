@@ -23,7 +23,6 @@ function App() {
       <Router>
         <Routes>
           <Route exact path="/" element={<Home />} />
-          <Route exact path="/help" component={<Help />} />
           <Route exact path="/cstr/adiabatic" element={<CSTRAdiabatic />} />
           <Route exact path="/cstr/exchanger" element={<CSTRExchanger />} />
           <Route exact path="/cstr/spacetime" element={<CSTRSpacetime />} />
@@ -33,6 +32,7 @@ function App() {
           <Route exact path="/pfr/spacetime" element={<PFRSpacetime />} />
           <Route exact path="/pfr/temperature" element={<PFRTemp />} />
           <Route exact path="/pfr/varco" element={<PFRVarCo />} />
+          <Route exact path="/help" element={<Help />} />
         </Routes>
       </Router>
     </div>

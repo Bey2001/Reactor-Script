@@ -1,10 +1,10 @@
-from flask_restful import Api, Resource, reqparse
+from flask_restful import Resource, reqparse
 
-class HelloApiHandler(Resource):
+class HomeApiHandler(Resource):
   def get(self):
     return {
       'resultStatus': 'SUCCESS',
-      'message': "We good"
+      'message': "Connected!"
       }
 
   def post(self):

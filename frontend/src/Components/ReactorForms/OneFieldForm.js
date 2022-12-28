@@ -20,6 +20,7 @@ function OneFieldForm(props) {
                 label={props.label}
                 error={props.error}
                 onChange={props.onChange}
+                placeholder={props.value}
             />
             <FormHelperText>{props.errorMessage}</FormHelperText>
         </FormControl>

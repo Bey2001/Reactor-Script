@@ -3,10 +3,9 @@ import Snackbar from "@mui/material/Snackbar";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 
+import axios from 'axios'
+
 import ReactorStack from '../Components/ReactorStack/ReactorStack';
-
-// Have each CSTR* be a stateful component with the specific fields necessary being stored.  This should allow editing using the old data as a basis
-
 
 class PFRVarCo extends Component {
 
@@ -118,53 +117,116 @@ class PFRVarCo extends Component {
             console.log(this.state.errors[bool])
         }
 
-        this.setState((prevState) => ({
-            ...prevState,
-            error: openSnackbar
-        }))
-
-        // If no error exists, send the fields to the backend
-        //      Need to also retrieve the URL and store it,
-        //          then use it to render the appropriate graph
         if (!openSnackbar) {
+            let coefficient = this.state.values.coefficient
 
+            axios
+                .get('http://localhost:5000/pfr/varco',
+                {
+                    params: {
+                        coefficient: coefficient
+                    },
+                    responseType: 'blob'
+                })
+                .then(response => {
+                    this.setState((prevState) => ({
+                        ...prevState,
+                        error: false,
+                        image: response.data,
+                        loading: true,
+                        posted: true
+                    }),
+                        () => {
+                            this.setState({loading: false})
+                        }
+                    )
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        }
+        else {
+            this.setState((prevState) => ({
+                ...prevState,
+                error: openSnackbar
+            }))
         }
     }
 
     handleCloseSnackbar = () => this.setState({error: false})
 
+    handleCloseImage = () => this.setState({
+        image: '',
+        loading: false,
+        posted: false
+    })
+
     render() {
         return (
             <div>
-                <h1>PFR - Coefficient Exploration</h1>
-                <ReactorStack 
-                    fields={this.fields}
-                    errors={this.state.errors}
-                    errorMessages={this.state.errorMessages}
-                    handleCalculate={this.handleCalculate.bind(this)}
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        height: '100vh'
-                    }}
-                />
-                {/* Snackbar to warn the user of existing errors */}
-                <Snackbar
-                    open={this.state.error}
-                    message="Input errors exist"
-                    onClose={this.handleCloseSnackbar}
-                    action={(
-                    <IconButton
-                        size="small"
-                        aria-label="close"
-                        color="inherit"
-                        onClick={this.handleCloseSnackbar}
-                      >
-                        <CloseIcon fontSize="small" />
-                      </IconButton>
-                    )}
-                />
+                <h1>PFR - Variable Coefficients of B</h1>
+                <p>
+                    This page is for simulating the reaction
+                    A + B &#10230; C
+                    in a PFR with varying coefficients of B.
+                </p>
+                {!this.state.posted ? 
+                    (<React.Fragment>
+                        <ReactorStack 
+                            fields={this.fields}
+                            errors={this.state.errors}
+                            errorMessages={this.state.errorMessages}
+                            handleCalculate={this.handleCalculate.bind(this)}
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                height: '100vh'
+                            }}
+                            values={this.state.values}
+                        />
+                        {/* Snackbar to warn the user of existing errors */}
+                        <Snackbar
+                            open={this.state.error}
+                            message="Input errors exist"
+                            onClose={this.handleCloseSnackbar}
+                            action={(
+                            <IconButton
+                                size="small"
+                                aria-label="close"
+                                color="inherit"
+                                onClick={this.handleCloseSnackbar}
+                            >
+                                <CloseIcon fontSize="small" />
+                            </IconButton>
+                            )}
+                        />
+                    </React.Fragment>)
+                    :
+                    (
+                    <React.Fragment>
+                        <IconButton
+                                size="small"
+                                aria-label="close"
+                                color="inherit"
+                                onClick={this.handleCloseImage}
+                            >
+                                <CloseIcon fontSize="small" />
+                        </IconButton>
+                        {
+                            this.state.loading ? 
+                            (
+                                <h1>Loading...</h1>
+                            )
+                            :
+                            (<img 
+                                src={URL.createObjectURL(this.state.image)}
+                                alt="plot.png"
+                            />)
+                        }
+                    </React.Fragment> 
+                    )
+                }
             </div>
         );
     }

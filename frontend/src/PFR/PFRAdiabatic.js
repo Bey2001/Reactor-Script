@@ -3,10 +3,9 @@ import Snackbar from "@mui/material/Snackbar";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 
+import axios from "axios";
+
 import ReactorStack from '../Components/ReactorStack/ReactorStack';
-
-// Have each CSTR* be a stateful component with the specific fields necessary being stored.  This should allow editing using the old data as a basis
-
 
 class PFRAdiabatic extends Component {
 
@@ -17,15 +16,12 @@ class PFRAdiabatic extends Component {
         this.state = {
             values: {
                 lowerTemp: 300,
-                upperTemp: 500,
-                cA: 30,
-                hfA: -35000,
-                cB: 30,
-                hfB: -35000,
-                cC: 30,
-                hfC: -41000,
-                // eAF: 10000,
-                // k300: 0.00001,
+                upperTemp: 1000,
+                cA: 0,
+                hfA: 0,
+                cB: 0,
+                hfB: 0,
+                hfC: 0,
             },
             errors: {
                 lowerTemp: true,
@@ -34,10 +30,7 @@ class PFRAdiabatic extends Component {
                 hfA: true,
                 cB: true,
                 hfB: true,
-                cC: true,
                 hfC: true,
-                // eAF: true,
-                // k300: true
             },
             errorMessages: {
                 lowerTemp: '',
@@ -46,12 +39,12 @@ class PFRAdiabatic extends Component {
                 hfA: '',
                 cB: '',
                 hfB: '',
-                cC: '',
                 hfC: '',
-                // eAF: '',
-                // k300: ''
             },
-            error: false
+            error: false,
+            image: '',
+            posted: false,
+            loading: false
         }
         /***************************************
          * Static fields, to be changed by dev *
@@ -83,15 +76,7 @@ class PFRAdiabatic extends Component {
             hfC: {
                 min: -50000,
                 max: 50000
-            },
-            // eAF: {
-            //     min: 10000,
-            //     max: 100000
-            // },
-            // k300: {
-            //     min: 0.00001,
-            //     max: 100
-            // }
+            }
         }
        
         // Constant fields for customizing the form fields on the web app
@@ -104,64 +89,43 @@ class PFRAdiabatic extends Component {
                 onChange2: this.changeUpperTemp.bind(this),
                 adorn: "K",
                 shorthand1: 'lowerTemp',
-                shorthand2: 'upperTemp'
+                shorthand2: 'upperTemp',
             },
             {
                 numVals: 1,
                 title: "Specific Heat of A",
                 onChange: this.changeCA.bind(this),
                 adorn: "cal/mol.K",
-                shorthand: 'cA'
+                shorthand: 'cA',
             },
             {
                 numVals: 1,
                 title: 'Heat of Formation of A',
                 onChange: this.changeHfA.bind(this),
                 adorn: 'cal/mol',
-                shorthand: 'hfA'
+                shorthand: 'hfA',
             },
             {
                 numVals: 1,
                 title: "Specific Heat of B",
                 onChange: this.changeCB.bind(this),
                 adorn: "cal/mol.K",
-                shorthand: 'cB'
+                shorthand: 'cB',
             },
             {
                 numVals: 1,
                 title: 'Heat of Formation of B',
                 onChange: this.changeHfB.bind(this),
                 adorn: 'cal/mol',
-                shorthand: 'hfB'
-            },
-            {
-                numVals: 1,
-                title: "Specific Heat of C",
-                onChange: this.changeCC.bind(this),
-                adorn: "cal/mol.K",
-                shorthand: 'cC'
+                shorthand: 'hfB',
             },
             {
                 numVals: 1,
                 title: 'Heat of Formation of C',
                 onChange: this.changeHfC.bind(this),
                 adorn: 'cal/mol',
-                shorthand: 'hfC'
-            },
-            // {
-            //     numVals: 1,
-            //     title: 'Activation Energy',
-            //     onChange: this.changeEAF.bind(this),
-            //     adorn: 'cal/mol',
-            //     shorthand: 'eAF'
-            // },
-            // {
-            //     numVals: 1,
-            //     title: 'Rate Constant (at 300K)',
-            //     onChange: this.changeK300.bind(this),
-            //     adorn: 'm^3/mol.s',
-            //     shorthand: 'k300'
-            // }
+                shorthand: 'hfC',
+            }
         ]
     }
 
@@ -407,42 +371,6 @@ class PFRAdiabatic extends Component {
         }
     }
 
-    changeCC(event) {
-        var obj = this.validateValue(event, this.bounds.cC.min, this.bounds.cC.max)
-        if (obj.error) {
-            this.setState((prevState) => 
-            ({
-                ...prevState,
-                errors: {
-                    ...prevState.errors,
-                    cC: obj.error
-                },
-                errorMessages: {
-                    ...prevState.errors,
-                    cC: obj.errorMessage
-                }
-            }));
-        }
-        else {
-            this.setState((prevState) => 
-            ({
-                ...prevState,
-                values: {
-                    ...prevState.values,
-                    cC: obj.value
-                },
-                errors: {
-                    ...prevState.errors,
-                    cC: obj.error
-                },
-                errorMessages: {
-                    ...prevState.errors,
-                    cC: obj.errorMessage
-                }
-            }));
-        }
-    }
-
     changeHfC(event) {
         var obj = this.validateValue(event, this.bounds.hfC.min, this.bounds.hfC.max)
         if (obj.error) {
@@ -479,132 +407,137 @@ class PFRAdiabatic extends Component {
         }
     }
 
-    // changeEAF(event) {
-    //     var obj = this.validateValue(event, this.bounds.eAF.min, this.bounds.eAF.max)
-    //     if (obj.error) {
-    //         this.setState((prevState) => 
-    //         ({
-    //             ...prevState,
-    //             errors: {
-    //                 ...prevState.errors,
-    //                 eAF: obj.error
-    //             },
-    //             errorMessages: {
-    //                 ...prevState.errors,
-    //                 eAF: obj.errorMessage
-    //             }
-    //         }));
-    //     }
-    //     else {
-    //         this.setState((prevState) => 
-    //         ({
-    //             ...prevState,
-    //             values: {
-    //                 ...prevState.values,
-    //                 eAF: obj.value
-    //             },
-    //             errors: {
-    //                 ...prevState.errors,
-    //                 eAF: obj.error
-    //             },
-    //             errorMessages: {
-    //                 ...prevState.errors,
-    //                 eAF: obj.errorMessage
-    //             }
-    //         }));
-    //     }
-    // }
-
-    // changeK300(event) {
-    //     var obj = this.validateValue(event, this.bounds.k300.min, this.bounds.k300.max)
-    //     if (obj.error) {
-    //         this.setState((prevState) => 
-    //         ({
-    //             ...prevState,
-    //             errors: {
-    //                 ...prevState.errors,
-    //                 k300: obj.error
-    //             },
-    //             errorMessages: {
-    //                 ...prevState.errors,
-    //                 k300: obj.errorMessage
-    //             }
-    //         }));
-    //     }
-    //     else {
-    //         this.setState((prevState) => 
-    //         ({
-    //             ...prevState,
-    //             values: {
-    //                 ...prevState.values,
-    //                 k300: obj.value
-    //             },
-    //             errors: {
-    //                 ...prevState.errors,
-    //                 k300: obj.error
-    //             },
-    //             errorMessages: {
-    //                 ...prevState.errors,
-    //                 k300: obj.errorMessage
-    //             }
-    //         }));
-    //     }
-    // }
-
     handleCalculate() {
         let openSnackbar = false
         for (const bool in this.state.errors) {
             openSnackbar = openSnackbar || this.state.errors[bool]
-            console.log(this.state.errors[bool])
         }
 
-        this.setState((prevState) => ({
-            ...prevState,
-            error: openSnackbar
-        }))
+        if (this.state.values.hfC - this.state.values.hfA - this.state.values.hfB >= 0) {
+            openSnackbar = true
+        }
 
-        // If no error exists, send the fields to the backend
-        //      Need to also retrieve the URL and store it,
-        //          then use it to render the appropriate graph
         if (!openSnackbar) {
+            let lowerTemp = '' + this.state.values.lowerTemp
+            let upperTemp = '' + this.state.values.upperTemp
+            let cA = '' + this.state.values.cA
+            let hfA = '' + this.state.values.hfA
+            let cB = '' + this.state.values.cB
+            let hfB=  '' + this.state.values.hfB
+            let hfC = '' + this.state.values.hfC
 
+            axios
+                .get('http://localhost:5000/pfr/adiabatic',
+                {
+                    params: {
+                        lowerTemp: lowerTemp,
+                        upperTemp: upperTemp,
+                        cA: cA,
+                        hfA: hfA,
+                        cB: cB,
+                        hfB: hfB,
+                        hfC: hfC
+                    },
+                    responseType: 'blob'
+                })
+                .then(response => {
+                    this.setState((prevState) => ({
+                        ...prevState,
+                        error: false,
+                        image: response.data,
+                        loading: true,
+                        posted: true
+                    }),
+                        () => {
+                            this.setState({loading: false})
+                        }
+                    )
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        }
+        else {
+            this.setState((prevState) => ({
+                ...prevState,
+                error: openSnackbar
+            }))
         }
     }
 
     handleCloseSnackbar = () => this.setState({error: false})
 
+    handleCloseImage = () => this.setState({
+        image: '',
+        loading: false,
+        posted: false
+    })
+
     render() {
         return (
             <div>
-                <h1>PFR - Adiabatic</h1>
-                <ReactorStack 
-                    fields={this.fields}
-                    errors={this.state.errors}
-                    errorMessages={this.state.errorMessages}
-                    handleCalculate={this.handleCalculate.bind(this)}
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        height: '100vh'
-                    }}
-                />
-                {/* Snackbar to warn the user of existing errors */}
-                <Snackbar
-                    open={this.state.error}
-                    message="Input errors exist"
-                    onClose={this.handleCloseSnackbar}
-                    action={(
-                    <IconButton
-                        size="small"
-                        aria-label="close"
-                        color="inherit"
-                        onClick={this.handleCloseSnackbar}
-                      >
-                        <CloseIcon fontSize="small" />
-                      </IconButton>
-                    )}
-                />
+                <h1>PFR - Adiabatic Operation</h1>
+                <p>
+                    This page is for simulating the reaction
+                    A + B &#10230; C
+                    in an Adiabatic PFR.
+                </p>
+
+                {!this.state.posted ? 
+                    (<React.Fragment>
+                        <ReactorStack 
+                            fields={this.fields}
+                            values={this.state.values}
+                            errors={this.state.errors}
+                            errorMessages={this.state.errorMessages}
+                            handleCalculate={this.handleCalculate.bind(this)}
+                            sx={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                height: '100vh'
+                            }}
+                        />
+                        {/* Snackbar to warn the user of existing errors */}
+                        <Snackbar
+                            open={this.state.error}
+                            message="Input errors exist"
+                            onClose={this.handleCloseSnackbar}
+                            action={(
+                            <IconButton
+                                size="small"
+                                aria-label="close"
+                                color="inherit"
+                                onClick={this.handleCloseSnackbar}
+                            >
+                                <CloseIcon fontSize="small" />
+                            </IconButton>
+                            )}
+                        />
+                    </React.Fragment>)
+                    :
+                    (<React.Fragment>
+                        <IconButton
+                                size="small"
+                                aria-label="close"
+                                color="inherit"
+                                onClick={this.handleCloseImage}
+                            >
+                                <CloseIcon fontSize="small" />
+                        </IconButton>
+                        {
+                            this.state.loading ? 
+                            (
+                                <h1>Loading...</h1>
+                            )
+                            :
+                            (<img 
+                                src={URL.createObjectURL(this.state.image)}
+                                alt="plot.png"
+                            />)
+                        }
+                    </React.Fragment>)
+                }
             </div>
         );
     }

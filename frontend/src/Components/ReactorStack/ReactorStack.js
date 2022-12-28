@@ -9,6 +9,7 @@ function ReactorStack(props) {
             fields={props.fields}
             errors={props.errors}
             errorMessages={props.errorMessages}
+            values={props.values}
             handleCalculate={props.handleCalculate}
         />
     );

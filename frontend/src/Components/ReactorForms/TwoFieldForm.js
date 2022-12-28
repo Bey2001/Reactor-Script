@@ -10,7 +10,6 @@ function TwoFieldForm(props) {
 
     return (
         <Box
-            component="form"
             className="two-field-form"
         >
             <OneFieldForm
@@ -20,6 +19,7 @@ function TwoFieldForm(props) {
                 label={props.title1}
                 error={props.error1}
                 errorMessage={props.errorMessage1}
+                value={props.value1}
             />
             <OneFieldForm
                 title={props.title2}
@@ -28,6 +28,7 @@ function TwoFieldForm(props) {
                 label={props.title2}
                 error={props.error2}
                 errorMessage={props.errorMessage2}
+                value={props.value2}
             />
         </Box>
     );

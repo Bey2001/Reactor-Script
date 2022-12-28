@@ -20,6 +20,10 @@
     font-size: calc(10px + 2vmin);
     color: white;
   }
+
+  .Home-header h2 {
+    width: 50ch;
+  }
   
   .App-link {
     color: #61dafb;
