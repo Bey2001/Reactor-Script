@@ -51,3 +51,6 @@ Need to delineate the appropriate parameters that the user can feed into the dif
 CSTR already has A + B -> C in the scripts, so I will have to retrofit the PFR scripts to accomodate for that, as well as doublecheck my maths for a good limit of the parameters that can be passed in.
 
 Had to set a callback function for setState since it's an asynchronous function (Source: https://stackoverflow.com/questions/54549069/how-to-setstate-with-a-file-object).
+
+Done with everything, but the refactoring of CSTR VarCo...
+

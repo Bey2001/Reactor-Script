@@ -15,7 +15,7 @@ class PFRVarCo extends Component {
         // Dynamic fields (subject to change, hence being in state)
         this.state = {
             values: {
-                coefficient: 4,
+                coefficient: 2,
             },
             errors: {
                 coefficient: true
@@ -31,8 +31,8 @@ class PFRVarCo extends Component {
 
         this.bounds = {
             coefficient: {
-                min: 0.5,
-                max: 4
+                min: 0.25,
+                max: 2
             }
         }
        
