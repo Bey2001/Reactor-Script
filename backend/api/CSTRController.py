@@ -475,9 +475,9 @@ class CSTRTempApiHandler(Resource):
 class CSTRVarCoApiHandler(Resource):
   ### Permanent Constants
   # Lower volumetric flowrate (m^3/s)
-  flow_start = 1
+  flow_start = 0.00001
   # Upper volumetric flowrate (m^3/s)
-  flow_end = 10000
+  flow_end = 10
   # Volume of CSTR being investigated (m^3)
   volume = 0.350
   # Total Concentration  - (mol/m^3)
@@ -524,20 +524,40 @@ class CSTRVarCoApiHandler(Resource):
     # Conversion vector
     x = [None] * self.num
 
-    # For loop for iterative function
+    # Basis Vector
+    conversion_basis = [None] * self.num
+    basis_eqn = lambda x, st: self.k * st - x / ((1 - x))
+
+      
+    if (coefficient == 1):
+        # k.tau = x_A/(c_A0.(1-x_A)^2)
+        base_eqn = basis_eqn
+    else:
+        # k.tau.c_A0^n = (x_A/(1 - x_A)).(1/(1-n.x_A)^n))
+        base_eqn = lambda x, st: self.k * st * (self.c_A0 ** (coefficient - 1)) - x / ((1 - x) ** coefficient)
+
+    #Conversion vector
+    x = [None] * self.num
+
+    #For loop for iterative function
     for i in range(self.num):
-      # Finding the rate constants
-      spacetime = self.spacetime_span[i]
-      # Algebraic equation
-      eqn = lambda x : spacetime - x / (self.k * (self.c_A0 ** (coefficient)) * (np.sign(1 - x) * (np.abs((1 - x)) ** (coefficient + 1))))
-      # Initial Guess for fsolve
-      initial_guess = 0.99
-      # Extract the conversion
-      x[i] = fsolve(eqn, initial_guess)[0]
+        spacetime = self.spacetime_span[i]
+        #Algebraic equation
+        eqn = lambda x : base_eqn(x, spacetime)
+        #Initial Guess for fsolve
+        initial_guess = 0.99
+        #Extract the conversion
+        x[i] = fsolve(eqn, initial_guess, xtol=1e-10)[0]
+        if coefficient == 1:
+            conversion_basis[i] = x[i]
+        else:
+            basis_equation = lambda x: basis_eqn(x, spacetime)
+            conversion_basis[i] = fsolve(basis_equation, initial_guess)[0]
 
     ### Graphing stuff
-    # Conversion as a function of spacetime
-    plt.plot(self.spacetime_span, x, 'b', label='Conversion with coefficient %.2f' % coefficient)    
+    plt.plot(self.spacetime_span, conversion_basis, 'b', label='Coefficient of A = 1')
+    label = 'Coefficient of A = {}'.format('{:f}'.format(coefficient).rstrip('.0'))
+    plt.plot(self.spacetime_span, x, 'r', label=label)    
     plt.legend(loc='best')
     plt.xlim(self.spacetime_end, self.spacetime_start)
     plt.xlabel('Spacetime (s)')

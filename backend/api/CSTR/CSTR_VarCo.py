@@ -24,7 +24,7 @@ import numpy as np
 
 ###Variable inputs for the user to alter
 # Coefficient to investigate
-n = 1.9999
+n = 1
 
 
 
@@ -96,7 +96,7 @@ spacetime_span = np.linspace(spacetime_start, spacetime_end, num)
 
 # Basis Vector
 conversion_basis = [None] * num
-basis_eqn = lambda x, st: k * st * c_A0 - x / ((1 - x) ** 2)
+basis_eqn = lambda x, st: k * st - x / (1 - x)
 
    
 if (n == 1):
@@ -125,8 +125,8 @@ for i in range(num):
         conversion_basis[i] = fsolve(basis_equation, initial_guess)[0]
 
 ### Graphing stuff
-plt.plot(spacetime_span, conversion_basis, 'b', label='Coefficient of B = 2')
-label = 'Coefficient of B = {}'.format('{:f}'.format(n).rstrip('.0'))
+plt.plot(spacetime_span, conversion_basis, 'b', label='Coefficient of A = 1')
+label = 'Coefficient of A = {}'.format('{:f}'.format(n).rstrip('.0'))
 plt.plot(spacetime_span, x, 'r', label=label)    
 plt.legend(loc='best')
 plt.xlim(spacetime_start, spacetime_end)

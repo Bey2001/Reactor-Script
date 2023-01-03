@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 import Snackbar from "@mui/material/Snackbar";
+import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 
 import axios from "axios";
 
 import ReactorStack from '../Components/ReactorStack/ReactorStack';
+
+import './PFR.css';
 
 class PFRAdiabatic extends Component {
 
@@ -17,9 +20,9 @@ class PFRAdiabatic extends Component {
             values: {
                 lowerTemp: 300,
                 upperTemp: 1000,
-                cA: 0,
+                cA: 10,
                 hfA: 0,
-                cB: 0,
+                cB: 10,
                 hfB: 0,
                 hfC: 0,
             },
@@ -475,9 +478,9 @@ class PFRAdiabatic extends Component {
 
     render() {
         return (
-            <div>
+            <header className='PFR-header'>
                 <h1>PFR - Adiabatic Operation</h1>
-                <p>
+                <p className='PFR-flavor'>
                     This page is for simulating the reaction
                     A + B &#10230; C
                     in an Adiabatic PFR.
@@ -517,14 +520,13 @@ class PFRAdiabatic extends Component {
                     </React.Fragment>)
                     :
                     (<React.Fragment>
-                        <IconButton
-                                size="small"
-                                aria-label="close"
-                                color="inherit"
-                                onClick={this.handleCloseImage}
-                            >
-                                <CloseIcon fontSize="small" />
-                        </IconButton>
+                        <Button 
+                            onClick={this.handleCloseImage} 
+                            color='inherit' 
+                            id="go-back"
+                        >
+                            Go Back (Saves Settings)
+                        </Button>
                         {
                             this.state.loading ? 
                             (
@@ -538,7 +540,7 @@ class PFRAdiabatic extends Component {
                         }
                     </React.Fragment>)
                 }
-            </div>
+            </header>
         );
     }
 }

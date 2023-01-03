@@ -42,17 +42,16 @@ function ReactorForm(props) {
                         value1={props.values[row.shorthand1]}
                         value2={props.values[row.shorthand2]}
                     />
-                    // <OneFieldForm
-                    //     title={row.title}
-                    //     onChange={row.onChange1}
-                    //     adorn={row.adorn}
-                    //     label={row.title}
-                    //     error={props.errors[row.shorthand1]}
-                    //     errorMessage={props.errorMessages[row.shorthand1]}
-                    // />
                 )
             ))}
-            <Button onClick={props.handleCalculate}>
+            <Button 
+                onClick={props.handleCalculate} 
+                color='inherit' 
+                id="calculate"
+                sx={{
+                    marginBottom: '3vh'
+                }}
+            >
                 Calculate
             </Button>
         </Box>

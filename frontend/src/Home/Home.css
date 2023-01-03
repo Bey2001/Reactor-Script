@@ -1,6 +1,6 @@
  
   .Home-logo {
-    height: 40vmin;
+    height: 30vmin;
     pointer-events: none;
   }
   
@@ -21,8 +21,8 @@
     color: white;
   }
 
-  .Home-header h2 {
-    width: 50ch;
+  .Home-header h3 {
+    width: 100vmin;
   }
   
   .App-link {

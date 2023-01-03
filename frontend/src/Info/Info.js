@@ -1,14 +1,11 @@
 import React from "react";
 
-import logo from '../logo.svg';
-
-import './Help.css'
+import './Info.css'
 
 
-function Help() {
+function Info() {
     return (
         <header className="App-header">
-            <img src={logo} className="Home-logo" alt="logo" />
             <h1>
                 ChE - Suite Help
             </h1>
@@ -28,4 +25,4 @@ function Help() {
     );
 }
 
-export default Help;
+export default Info;

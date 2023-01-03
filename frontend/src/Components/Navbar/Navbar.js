@@ -1,15 +1,11 @@
 import React, { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import IconButton from '@mui/material/IconButton';
 
 import LargeMenu from './LargeMenu';
-import SmallMenu from './SmallMenu';
-import logo from '../../logo.svg';
-
+import { Box } from '@mui/material';
 
 // List of CSTR page names
 const cstrPages = [
@@ -56,18 +52,10 @@ const pfrPages = [
 ];
 
 function Navbar() {
-  const [anchorElCSTR, setAnchorElCSTR] = useState(null);
-  const [anchorElPFR, setAnchorElPFR] = useState(null);
   const [anchorBigCSTR, setAnchorBigCSTR] = useState(null);
   const [anchorBigPFR, setAnchorBigPFR] = useState(null);
 
 
-  const handleOpenCSTRMenu = (event) => {
-    setAnchorElCSTR(event.currentTarget);
-  };
-  const handleOpenPFRMenu = (event) => {
-    setAnchorElPFR(event.currentTarget);
-  };
   const handleOpenBigCSTR = (event) => {
     setAnchorBigCSTR(event.currentTarget);
   };
@@ -75,12 +63,6 @@ function Navbar() {
     setAnchorBigPFR(event.currentTarget);
   };
 
-  const handleCloseCSTRMenu = () => {
-    setAnchorElCSTR(null);
-  };
-  const handleClosePFRMenu = () => {
-    setAnchorElPFR(null);
-  };
   const handleCloseBigCSTR = () => {
     setAnchorBigCSTR(null);
   };
@@ -91,30 +73,18 @@ function Navbar() {
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
-        <Toolbar disableGutters>
+        <Toolbar>
 
-          {/* Full screen logo */}
-          <IconButton 
-            href="/"
-            sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}
-          >
-            <img 
-              src={logo} 
-              className="App-logo" 
-              alt="logo" 
-            />
-          </IconButton>
+          {/* Home Name */}
           <Typography
-            variant="h6"
+            variant="h4"
             noWrap
             component="a"
             href="/"
             sx={{
               mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
+              fontFamily: 'arial',
+              fontWeight: 600,
               color: 'inherit',
               textDecoration: 'none',
             }}
@@ -122,19 +92,14 @@ function Navbar() {
             ChE-Suite
           </Typography>
 
-          {/* Large screen menu */}
-          {/* <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {cstrPages.map((item) => (
-              <Button
-                key={item.page}
-                onClick={handleCloseCSTRMenu}
-                href={item.path}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {item.page}
-              </Button>
-            ))}
-          </Box>  */}
+          <Box
+            sx={{
+              width: 3,
+              height: 50,
+              backgroundColor: 'white'
+            }}
+          />
+
           <LargeMenu
             title="CSTR"
             handleOpen={handleOpenBigCSTR}
@@ -149,69 +114,23 @@ function Navbar() {
             anchorEl={anchorBigPFR}
             pages={pfrPages}
           />
-          {/* End of full screen typography */}
-          
-          {/* Small screen menu */}
-          <SmallMenu
-            title="CSTR"
-            handleOpen={handleOpenCSTRMenu}
-            handleClose={handleCloseCSTRMenu}
-            anchorEl={anchorElCSTR}
-            pages={cstrPages}
-          />
-          {/* End of small screen menu */}
 
-          {/* Small screen typography */}
-          <IconButton sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}>
-            <img 
-              src={logo} 
-              className="App-logo" 
-              alt="logo" 
-            />
-          </IconButton>
           <Typography
-            variant="h5"
+            variant="h4"
             noWrap
             component="a"
-            href="/"
+            href="/info"
             sx={{
               mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
+              fontFamily: 'arial',
+              fontWeight: 600,
               color: 'inherit',
               textDecoration: 'none',
+              marginLeft: 'auto'
             }}
           >
-            ChE-Suite
+            Info
           </Typography>
-          {/* End of Small screen typography */}
-
-          <SmallMenu
-            title="PFR"
-            handleOpen={handleOpenPFRMenu}
-            handleClose={handleClosePFRMenu}
-            anchorEl={anchorElPFR}
-            pages={pfrPages}
-          />
-
-          <Box sx={{ flexGrow: 0 }}>
-            <IconButton                 
-              href={"/help"}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right'
-              }}
-              sx={{ 
-                color: 'inherit', 
-              }}
-            >
-              HELP
-            </IconButton>
-          </Box>
         </Toolbar>
       </Container>
     </AppBar>

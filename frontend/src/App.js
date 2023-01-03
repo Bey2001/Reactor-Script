@@ -11,7 +11,7 @@ import PFRAdiabatic from './PFR/PFRAdiabatic';
 import PFRVarCo from './PFR/PFRVarCo';
 import PFRSpacetime from './PFR/PFRSpacetime';
 import PFRTemp from './PFR/PFRTemp';
-import Help from './Help/Help';
+import Info from './Info/Info';
 
 import './App.css';
 
@@ -32,7 +32,7 @@ function App() {
           <Route exact path="/pfr/spacetime" element={<PFRSpacetime />} />
           <Route exact path="/pfr/temperature" element={<PFRTemp />} />
           <Route exact path="/pfr/varco" element={<PFRVarCo />} />
-          <Route exact path="/help" element={<Help />} />
+          <Route exact path="/info" element={<Info />} />
         </Routes>
       </Router>
     </div>

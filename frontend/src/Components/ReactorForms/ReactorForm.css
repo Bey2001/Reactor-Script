@@ -4,3 +4,7 @@
     flex-wrap: wrap;
     align-content: center;
 }
+
+#calculate {
+    background-color: #1976d2;
+}

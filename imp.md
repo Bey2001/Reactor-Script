@@ -52,5 +52,17 @@ CSTR already has A + B -> C in the scripts, so I will have to retrofit the PFR s
 
 Had to set a callback function for setState since it's an asynchronous function (Source: https://stackoverflow.com/questions/54549069/how-to-setstate-with-a-file-object).
 
-Done with everything, but the refactoring of CSTR VarCo...
-
+Some suggestions for the Frontend:
+- Dark Mode present for everything
+- Navbar
+    - Get rid of the icon
+    - Fix the font of ChE-Suite
+    - Left-justify the CSTR and PFR buttons
+    - Make them interactive dropdown menus, rather than just buttons
+    - Rename HELP to Info
+- Home Menu
+    - Decrease the space between paragraphs to make it a one-screen page
+- Help Page --> Info Page
+    - Make a section for help/access to videos
+- Make a footer to credit Sam/give access to different pages from a quick point of view
+- Possibly make a landing page

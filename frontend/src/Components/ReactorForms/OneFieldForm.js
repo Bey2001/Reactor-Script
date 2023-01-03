@@ -1,16 +1,17 @@
 import React from "react";
-
 import FormControl from "@mui/material/FormControl";
 import InputAdornment from "@mui/material/InputAdornment";
 import InputLabel from "@mui/material/InputLabel";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import FormHelperText from "@mui/material/FormHelperText";
 
+import './OneFieldForm.css';
+
 function OneFieldForm(props) {
 
     return (
         <FormControl required fullwidth sx={{ m: 1 }}>
-            <InputLabel >{props.title}</InputLabel>
+            <InputLabel sx={{color: "inherit"}}>{props.title}</InputLabel>
             <OutlinedInput
                 endAdornment={
                     <InputAdornment>
@@ -21,8 +22,9 @@ function OneFieldForm(props) {
                 error={props.error}
                 onChange={props.onChange}
                 placeholder={props.value}
+                sx={{color: "inherit"}}
             />
-            <FormHelperText>{props.errorMessage}</FormHelperText>
+            <FormHelperText sx={{color: "inherit"}}>{props.errorMessage}</FormHelperText>
         </FormControl>
     );
 }

@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import IconButton from "@mui/material/IconButton";
+import Button from "@mui/material/Button";
 import CloseIcon from "@mui/icons-material/Close";
 
 import axios from 'axios'
 
 import ReactorStack from '../Components/ReactorStack/ReactorStack';
+
+import './CSTR.css';
 
 class CSTRVarCo extends Component {
 
@@ -15,7 +18,7 @@ class CSTRVarCo extends Component {
         // Dynamic fields (subject to change, hence being in state)
         this.state = {
             values: {
-                coefficient: 3,
+                coefficient: 1,
             },
             errors: {
                 coefficient: true
@@ -40,7 +43,7 @@ class CSTRVarCo extends Component {
         this.fields = [
             {
                 numVals: 1,
-                title: "Coefficient of Reactant B",
+                title: "Coefficient of A",
                 onChange: this.changeCoefficient.bind(this),
                 adorn: "",
                 shorthand: 'coefficient'
@@ -163,12 +166,12 @@ class CSTRVarCo extends Component {
 
     render() {
         return (
-            <div>
-                <h1>CSTR - Varying Coefficients of B</h1>
-                <p>
+            <header className="CSTR-header">
+                <h1>CSTR - Varying Coefficients of A</h1>
+                <p className='CSTR-flavor'>
                     This page is for simulating the reaction
-                    A + B &#10230; C
-                    in a CSTR with varying coefficients of B.
+                    A &#10230; B
+                    in a CSTR with varying coefficients of A.
                 </p>
                 {!this.state.posted ? 
                     (<React.Fragment>
@@ -205,14 +208,13 @@ class CSTRVarCo extends Component {
                     :
                     (
                     <React.Fragment>
-                        <IconButton
-                                size="small"
-                                aria-label="close"
-                                color="inherit"
-                                onClick={this.handleCloseImage}
-                            >
-                                <CloseIcon fontSize="small" />
-                        </IconButton>
+                        <Button 
+                            onClick={this.handleCloseImage} 
+                            color='inherit' 
+                            id="go-back"
+                        >
+                            Go Back (Saves Settings)
+                        </Button>
                         {
                             this.state.loading ? 
                             (
@@ -227,7 +229,7 @@ class CSTRVarCo extends Component {
                     </React.Fragment> 
                     )
                 }
-            </div>
+            </header>
         );
     }
 }

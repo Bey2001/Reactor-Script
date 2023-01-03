@@ -1,0 +1,9 @@
+.MuiOutlinedInput-root fieldset {
+    border-color: inherit;
+}
+
+.MuiInputAdornment-root p {
+    color: white;
+}
+
+/* https://mui.com/material-ui/api/outlined-input/ */

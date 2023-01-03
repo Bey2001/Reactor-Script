@@ -3,24 +3,21 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/IconButton';
 
 function LargeMenu(props) {
 
     return (
-        <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+        <Box>
             
             {/* Icon/Name */}
-            <IconButton
+            <Button
                 size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
                 onClick={props.handleOpen}
                 color="inherit"
             >
                 {props.title}
-            </IconButton>
+            </Button>
             {/* End of Icon/Name */}
 
             <Menu
@@ -37,9 +34,6 @@ function LargeMenu(props) {
                 }}
                 open={Boolean(props.anchorEl)}
                 onClose={props.handleClose}
-                sx={{
-                    display: { xs: 'none', md: 'block' },
-                }}
             >
                 {props.pages.map((page) => (
                     <MenuItem 

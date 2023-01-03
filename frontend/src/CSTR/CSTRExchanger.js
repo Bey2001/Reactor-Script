@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 import Snackbar from "@mui/material/Snackbar";
+import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 
 import axios from 'axios'
 
 import ReactorStack from '../Components/ReactorStack/ReactorStack';
+
+import './CSTR.css';
 
 // Have each CSTR* be a stateful component with the specific fields necessary being stored.  This should allow editing using the old data as a basis
 
@@ -366,9 +369,9 @@ class CSTRExchanger extends Component {
 
     render() {
         return (
-            <div>
+            <header className="CSTR-header">
                 <h1>CSTR - Heat Exchanger</h1>
-                <p>
+                <p className='CSTR-flavor'>
                     This page is for simulating the reaction
                     A + B &#10230; C
                     in a CSTR with a heat exchanger.
@@ -408,14 +411,13 @@ class CSTRExchanger extends Component {
                     :
                     (
                     <React.Fragment>
-                        <IconButton
-                                size="small"
-                                aria-label="close"
-                                color="inherit"
-                                onClick={this.handleCloseImage}
-                            >
-                                <CloseIcon fontSize="small" />
-                        </IconButton>
+                        <Button 
+                            onClick={this.handleCloseImage} 
+                            color='inherit' 
+                            id="go-back"
+                        >
+                            Go Back (Saves Settings)
+                        </Button>
                         {
                             this.state.loading ? 
                             (
@@ -430,7 +432,7 @@ class CSTRExchanger extends Component {
                     </React.Fragment> 
                     )
                 }
-            </div>
+            </header>
         );
     }
 }

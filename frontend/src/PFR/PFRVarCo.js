@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Snackbar from "@mui/material/Snackbar";
+import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -15,7 +16,7 @@ class PFRVarCo extends Component {
         // Dynamic fields (subject to change, hence being in state)
         this.state = {
             values: {
-                coefficient: 2,
+                coefficient: 1,
             },
             errors: {
                 coefficient: true
@@ -40,7 +41,7 @@ class PFRVarCo extends Component {
         this.fields = [
             {
                 numVals: 1,
-                title: "Coefficient of Reactant B",
+                title: "Coefficient of B",
                 onChange: this.changeCoefficient.bind(this),
                 adorn: "",
                 shorthand: 'coefficient'
@@ -163,9 +164,9 @@ class PFRVarCo extends Component {
 
     render() {
         return (
-            <div>
+            <header className='PFR-header'>
                 <h1>PFR - Variable Coefficients of B</h1>
-                <p>
+                <p className='PFR-flavor'>
                     This page is for simulating the reaction
                     A + B &#10230; C
                     in a PFR with varying coefficients of B.
@@ -205,14 +206,13 @@ class PFRVarCo extends Component {
                     :
                     (
                     <React.Fragment>
-                        <IconButton
-                                size="small"
-                                aria-label="close"
-                                color="inherit"
-                                onClick={this.handleCloseImage}
-                            >
-                                <CloseIcon fontSize="small" />
-                        </IconButton>
+                        <Button 
+                            onClick={this.handleCloseImage} 
+                            color='inherit' 
+                            id="go-back"
+                        >
+                            Go Back (Saves Settings)
+                        </Button>
                         {
                             this.state.loading ? 
                             (
@@ -227,7 +227,7 @@ class PFRVarCo extends Component {
                     </React.Fragment> 
                     )
                 }
-            </div>
+            </header>
         );
     }
 }
