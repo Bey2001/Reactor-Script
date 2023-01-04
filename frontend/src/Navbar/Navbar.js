@@ -1,60 +1,60 @@
-import React, { useState } from 'react';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
+import React, { useState } from "react";
 
-import LargeMenu from './LargeMenu';
-import { Box } from '@mui/material';
+import { Box } from "@mui/material";
+import AppBar from "@mui/material/AppBar";
+import Container from "@mui/material/Container";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+
+import LargeMenu from "./LargeMenu";
 
 // List of CSTR page names
 const cstrPages = [
   {
-    "page": "Adiabatic",
-    "path": "/cstr/adiabatic"
+    page: "Adiabatic",
+    path: "/cstr/adiabatic",
   },
   {
-    "page": "Heat Exchanger",
-    "path": "/cstr/exchanger"
+    page: "Heat Exchanger",
+    path: "/cstr/exchanger",
   },
   {
-    "page": "Spacetime",
-    "path": "/cstr/spacetime"
+    page: "Spacetime",
+    path: "/cstr/spacetime",
   },
   {
-    "page": "Temperature",
-    "path": "/cstr/temperature"
+    page: "Temperature",
+    path: "/cstr/temperature",
   },
   {
-    "page": "Var. Coefficient",
-    "path": "/cstr/varco"
-  }
+    page: "Var. Coefficient",
+    path: "/cstr/varco",
+  },
 ];
 
 // List of PFR page names
 const pfrPages = [
   {
-    "page": "Adiabatic",
-    "path": "/pfr/adiabatic"
+    page: "Adiabatic",
+    path: "/pfr/adiabatic",
   },
   {
-    "page": "Spacetime",
-    "path": "/pfr/spacetime"
+    page: "Spacetime",
+    path: "/pfr/spacetime",
   },
   {
-    "page": "Temperature",
-    "path": "/pfr/temperature"
+    page: "Temperature",
+    path: "/pfr/temperature",
   },
   {
-    "page": "Var. Coefficient",
-    "path": "/pfr/varco"
-  }
+    page: "Var. Coefficient",
+    path: "/pfr/varco",
+  },
 ];
 
 function Navbar() {
   const [anchorBigCSTR, setAnchorBigCSTR] = useState(null);
   const [anchorBigPFR, setAnchorBigPFR] = useState(null);
-
 
   const handleOpenBigCSTR = (event) => {
     setAnchorBigCSTR(event.currentTarget);
@@ -74,7 +74,6 @@ function Navbar() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar>
-
           {/* Home Name */}
           <Typography
             variant="h4"
@@ -83,10 +82,10 @@ function Navbar() {
             href="/"
             sx={{
               mr: 2,
-              fontFamily: 'arial',
+              fontFamily: "arial",
               fontWeight: 600,
-              color: 'inherit',
-              textDecoration: 'none',
+              color: "inherit",
+              textDecoration: "none",
             }}
           >
             ChE-Suite
@@ -96,7 +95,7 @@ function Navbar() {
             sx={{
               width: 3,
               height: 50,
-              backgroundColor: 'white'
+              backgroundColor: "white",
             }}
           />
 
@@ -122,11 +121,11 @@ function Navbar() {
             href="/info"
             sx={{
               mr: 2,
-              fontFamily: 'arial',
+              fontFamily: "arial",
               fontWeight: 600,
-              color: 'inherit',
-              textDecoration: 'none',
-              marginLeft: 'auto'
+              color: "inherit",
+              textDecoration: "none",
+              marginLeft: "auto",
             }}
           >
             Info

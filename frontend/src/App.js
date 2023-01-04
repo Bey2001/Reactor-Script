@@ -1,20 +1,20 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './Components/Navbar/Navbar';
-import Home from './Home/Home';
-import CSTRAdiabatic from './CSTR/CSTRAdiabatic';
-import CSTRVarCo from './CSTR/CSTRVarCo';
-import CSTRExchanger from './CSTR/CSTRExchanger';
-import CSTRSpacetime from './CSTR/CSTRSpacetime';
-import CSTRTemp from './CSTR/CSTRTemp';
-import PFRAdiabatic from './PFR/PFRAdiabatic';
-import PFRVarCo from './PFR/PFRVarCo';
-import PFRSpacetime from './PFR/PFRSpacetime';
-import PFRTemp from './PFR/PFRTemp';
-import Info from './Info/Info';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import './App.css';
+import Home from "./Home/Home";
+import Info from "./Info/Info";
+import Navbar from "./Navbar/Navbar";
+import CSTRAdiabatic from "./Reactors/ReactorPages/CSTR/CSTRAdiabatic";
+import CSTRExchanger from "./Reactors/ReactorPages/CSTR/CSTRExchanger";
+import CSTRSpacetime from "./Reactors/ReactorPages/CSTR/CSTRSpacetime";
+import CSTRTemp from "./Reactors/ReactorPages/CSTR/CSTRTemp";
+import CSTRVarCo from "./Reactors/ReactorPages/CSTR/CSTRVarCo";
+import PFRAdiabatic from "./Reactors/ReactorPages/PFR/PFRAdiabatic";
+import PFRSpacetime from "./Reactors/ReactorPages/PFR/PFRSpacetime";
+import PFRTemp from "./Reactors/ReactorPages/PFR/PFRTemp";
+import PFRVarCo from "./Reactors/ReactorPages/PFR/PFRVarCo";
 
+import "./App.css";
 
 function App() {
   return (
