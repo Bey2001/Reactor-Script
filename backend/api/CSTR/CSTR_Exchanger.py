@@ -8,25 +8,24 @@
 #   All other variables are assumed constant
 #   Activation energies assumed to be for simplicity's sake
 
-#Example from HW8Q5
+# Example from HW8Q5
 # Elementary Liquid Phase Reaction (300 K)
 # A + B -> C
 # rate = 0.01*cA*cB
 
-###Importing different libraries
+# Importing different libraries
 # Library for plotting functions and (in our case) points
 import matplotlib.pyplot as plt
 # Library for number-related functions and constants
 import numpy as np
 
 
-
-### Variable inputs for the user to alter
+# Variable inputs for the user to alter
 # Initial temperature  - K
 Tstart = 300
 # End temperature - K
 Tend = 500
-### Heat Exchanger parameters
+# Heat Exchanger parameters
 # Overall heat transfer coefficient - (W/m^2.K)
 U = 630
 # Area of heat exchange - (m^2)
@@ -35,34 +34,33 @@ A = 0.00033
 T_A = 330
 
 
-
-### Permanent Constants
+# Permanent Constants
 # Forward Activation Energy - cal/mol
 Ea_f = 10000
 # Temperature for original k values - K
 T0 = 300
 # Rate constant at T0 K - (m^3/mol.s)
 k_f0 = 0.00001
-#Constants for A
+# Constants for A
 #   Heat of formation of A - (cal/mol)
 delta_H_A = -20000
 #   Specfic heat of A - (cal/mol)
 cp_A = 15
-#Constants for B
+# Constants for B
 #   Heat of formation of B - (cal/mol)
 delta_H_B = -15000
 #   Specific heat of B - (cal/mol)
 cp_B = 15
-#Constants for C
+# Constants for C
 #   Heat of formation of C - (cal/mol)
 delta_H_C = -41000
 #   Specific heat of C - (cal/mol)
 cp_C = 30
-#Total Concentration (mol/m^3)
+# Total Concentration (mol/m^3)
 c_T0 = 100
-#Volume of the reactor - m^3
+# Volume of the reactor - m^3
 Volume = 0.350
-#Initial Volumetric Flowrate (m^3/s)
+# Initial Volumetric Flowrate (m^3/s)
 volumetric_flowrate = 0.002
 # Gas Constant - cal/(mol.K)
 R = 1.9872
@@ -70,8 +68,7 @@ R = 1.9872
 num = 101
 
 
-
-### Values that are calculated from parameters
+# Values that are calculated from parameters
 # Total heat of reaction
 delta_H_r = delta_H_C - delta_H_A - delta_H_B
 # Difference in the heat capacities of the chemical species
@@ -85,10 +82,9 @@ F_A0 = volumetric_flowrate*c_A0
 sum_theta_cp = cp_A + cp_B
 
 
-
-### Mass Balance vectors - Length 101 to have clean numbers
+# Mass Balance vectors - Length 101 to have clean numbers
 # These are actually constant, regardless of values input by user
-#   Conversion vector for the mass balance 
+#   Conversion vector for the mass balance
 #   - Constant across the temperature, regardless of thermodynamic properties
 #   - Calculated by using the original CSTR_Adiabatic script from 300 to 1000K
 x_MB = [0.075, 0.103, 0.138, 0.177, 0.222, 0.269, 0.319, 0.368, 0.417, 0.463,
@@ -115,15 +111,15 @@ T_MB = [300.0, 307.0, 314.0, 321.0, 328.0, 335.0, 342.0, 349.0, 356.0, 363.0,
         930.0, 937.0, 944.0, 951.0, 958.0, 965.0, 972.0, 979.0, 986.0, 993.0,
         1000.0]
 
-### Energy Balance vectors
+# Energy Balance vectors
 # Simple linear calculations
 T_EB = np.linspace(Tstart, Tend, num)
-x_EB = [(U*A*(T_A - T) - F_A0*sum_theta_cp*(T - T0))/(F_A0*(delta_cp*(T - T0) + delta_H_r)) for T in T_EB]
+x_EB = [(U*A*(T_A - T) - F_A0*sum_theta_cp*(T - T0)) /
+        (F_A0*(delta_cp*(T - T0) + delta_H_r)) for T in T_EB]
 
 
-
-### Graphing stuff
-plt.plot(T_MB, x_MB, 'b', label='Material Balance')    
+# Graphing stuff
+plt.plot(T_MB, x_MB, 'b', label='Material Balance')
 plt.plot(T_EB, x_EB, 'r', label='Energy Balance')
 plt.legend(loc='best')
 plt.xlim(Tstart, Tend)

@@ -1,18 +1,18 @@
-#Script for handling CSTR Conversion v. Spacetime
+# Script for handling CSTR Conversion v. Spacetime
 #   All other variables are assumed constant
 #   Activation energies assumed to be for simplicity's sake
 
-#Example from HW8Q5
+# Example from HW8Q5
 # Elementary Liquid Phase Reaction (300 K)
 # A + nB -> C
 # rate = 0.01*cA*cB
 
-#Script uses an algebraic solver function.  This does lead to issues with some 
-# values since the solver itself does not have limitations/constraints on its 
-# calculations, thus multiple or inaccurate solutions can be reported in the 
+# Script uses an algebraic solver function.  This does lead to issues with some
+# values since the solver itself does not have limitations/constraints on its
+# calculations, thus multiple or inaccurate solutions can be reported in the
 # graph, leading to some shapes that should not exist and disrupting curves.
 
-###Importing different libraries
+# Importing different libraries
 # Library for finding 0s to algebraic equations
 from scipy.optimize import fsolve
 # Library for plotting functions and (in our case) points
@@ -21,36 +21,32 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-
-###Variable inputs for the user to alter
+# Variable inputs for the user to alter
 # Coefficient to investigate
 n = 1
 
 
-
-### Permanent Constants
+# Permanent Constants
 # Rate Constant at 300 K - (m^3/mol.s)
 k = 0.00001
-#Total Concentration - (kmol/m^3)
+# Total Concentration - (kmol/m^3)
 c_T0 = 100
-#Volume of the reactor - m^3
+# Volume of the reactor - m^3
 volume = 0.350
-#Lower Volumetric Flowrate - m^3/s
+# Lower Volumetric Flowrate - m^3/s
 lower_flowrate = 0.00001
 # Upper Volumetric Flowrate - m^3/s
 upper_flowrate = 10
-#Number of elements to plot
+# Number of elements to plot
 num = 100
 
 
-
-###Values that are calculated from parameters
-#Calculation of initial concentrations
+# Values that are calculated from parameters
+# Calculation of initial concentrations
 c_A0 = 0.5 * c_T0
 spacetime_start = volume / upper_flowrate
 spacetime_end = volume / lower_flowrate
 spacetime_span = np.linspace(spacetime_start, spacetime_end, num)
-
 
 
 # Basis Vectors
@@ -86,7 +82,7 @@ spacetime_span = np.linspace(spacetime_start, spacetime_end, num)
 
 # if (n > 1):
 #     # k.tau = (1/c_A0^n).(x_A/(1 - x_A)).(1/(1-n.x_A)^n))
-#     base_eqn = lambda x, st: k * st * (c_A0 ** n) - x / ((1 - x) * ((1 - n * x) ** n))    
+#     base_eqn = lambda x, st: k * st * (c_A0 ** n) - x / ((1 - x) * ((1 - n * x) ** n))
 # elif (n == 1):
 #     # k.tau = x_A/(c_A0.(1-x_A)^2)
 #     base_eqn = basis_eqn
@@ -96,38 +92,38 @@ spacetime_span = np.linspace(spacetime_start, spacetime_end, num)
 
 # Basis Vector
 conversion_basis = [None] * num
-basis_eqn = lambda x, st: k * st - x / (1 - x)
+def basis_eqn(x, st): return k * st - x / (1 - x)
 
-   
+
 if (n == 1):
     # k.tau = x_A/(c_A0.(1-x_A)^2)
     base_eqn = basis_eqn
 else:
     # k.tau.c_A0^n = (x_A/(1 - x_A)).(1/(1-n.x_A)^n))
-    base_eqn = lambda x, st: k * st * (c_A0 ** (n - 1)) - x / ((1 - x) ** n)
+    def base_eqn(x, st): return k * st * (c_A0 ** (n - 1)) - x / ((1 - x) ** n)
 
-#Conversion vector
+# Conversion vector
 x = [None] * num
 
-#For loop for iterative function
+# For loop for iterative function
 for i in range(num):
     spacetime = spacetime_span[i]
-    #Algebraic equation
-    eqn = lambda x : base_eqn(x, spacetime)
-    #Initial Guess for fsolve
+    # Algebraic equation
+    def eqn(x): return base_eqn(x, spacetime)
+    # Initial Guess for fsolve
     initial_guess = 0.99
-    #Extract the conversion
+    # Extract the conversion
     x[i] = fsolve(eqn, initial_guess, xtol=1e-10)[0]
     if n == 1:
         conversion_basis[i] = x[i]
     else:
-        basis_equation = lambda x: basis_eqn(x, spacetime)
+        def basis_equation(x): return basis_eqn(x, spacetime)
         conversion_basis[i] = fsolve(basis_equation, initial_guess)[0]
 
-### Graphing stuff
+# Graphing stuff
 plt.plot(spacetime_span, conversion_basis, 'b', label='Coefficient of A = 1')
 label = 'Coefficient of A = {}'.format('{:f}'.format(n).rstrip('.0'))
-plt.plot(spacetime_span, x, 'r', label=label)    
+plt.plot(spacetime_span, x, 'r', label=label)
 plt.legend(loc='best')
 plt.xlim(spacetime_start, spacetime_end)
 plt.xlabel('Spacetime')

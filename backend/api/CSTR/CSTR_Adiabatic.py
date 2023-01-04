@@ -7,7 +7,6 @@
 #       - Heat of Formation of C
 #       - Specific Heat of A
 #       - Specific Heat of B
-#       - Specific Heat of C
 #   All other variables are assumed constant
 #   Activation energies assumed to be for simplicity's sake
 
@@ -16,15 +15,14 @@
 #    A + B -> C
 #    rate = 0.01*cA*cB
 
-### Importing different libraries
+# Importing different libraries
 # Library for plotting functions and (in our case) points
 import matplotlib.pyplot as plt
 # Library for number-related functions and constants
 import numpy as np
 
 
-
-### Variable inputs for the user to alter
+# Variable inputs for the user to alter
 # Initial Temperature - K
 Tstart = 300
 # Final temperature - K
@@ -44,38 +42,35 @@ cp_B = 15
 delta_H_C = -41000
 
 
-
-### Permanent Constants
+# Permanent Constants
 # Forward Activation Energy - cal/mol
 Ea_f = 10000
 # Temperature for original k values - K
 T0 = 300
 # Rate Constant at T0 K - (m^3/mol.s)
-k_f0 = 0.00001 # 0.01 L/mol.s
+k_f0 = 0.00001  # 0.01 L/mol.s
 # Total Concentration - (mol/m^3)
-c_T0 = 100 # 0.1 M
+c_T0 = 100  # 0.1 M
 # Volume of the reactor - m^3
-Volume = 0.350 #350 L
+Volume = 0.350  # 350 L
 # Initial Volumetric Flowrate - (m^3/s)
-volumetric_flowrate = 0.002 #2 L/s
+volumetric_flowrate = 0.002  # 2 L/s
 # Gas Constant - cal/(mol.K)
 R = 1.9872
 # Number of elements to plot
 num = 101
 
 
-
-### Values that are calculated from parameters
+# Values that are calculated from parameters
 # Total heat of reaction - Must be greater than 0
 delta_H_r = delta_H_C - delta_H_A - delta_H_B
 # Summing up all the heat capacities of species in the feed
 sum_theta_cp = cp_A + cp_B
 
 
-
-### Mass Balance vectors - Length 101 to have clean numbers
+# Mass Balance vectors - Length 101 to have clean numbers
 # These are actually constant, regardless of values input by user
-#   Conversion vector for the mass balance 
+#   Conversion vector for the mass balance
 #   - Constant across the temperature, regardless of thermodynamic properties
 #   - Calculated by using the original CSTR_Adiabatic script from 300 to 1000K
 x_MB = [0.075, 0.103, 0.138, 0.177, 0.222, 0.269, 0.319, 0.368, 0.417, 0.463,
@@ -103,16 +98,14 @@ T_MB = [300.0, 307.0, 314.0, 321.0, 328.0, 335.0, 342.0, 349.0, 356.0, 363.0,
         1000.0]
 
 
-
-### Energy Balance vectors
+# Energy Balance vectors
 # Simple linear calculations
 T_EB = np.linspace(Tstart, Tend, num)
 x_EB = [(T - T0)*(-sum_theta_cp/delta_H_r) for T in T_EB]
 
 
-
-### Graphing stuff
-plt.plot(T_MB, x_MB, 'b', label='Material Balance')    
+# Graphing stuff
+plt.plot(T_MB, x_MB, 'b', label='Material Balance')
 plt.plot(T_EB, x_EB, 'r', label='Energy Balance')
 plt.legend(loc='best')
 plt.xlim(Tstart, Tend)

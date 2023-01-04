@@ -12,7 +12,7 @@
 #   A + B -> C
 #   rate = 0.01*cA*cB
 
-### Importing different libraries
+# Importing different libraries
 # Library for finding 0s to algebraic equations
 from scipy.optimize import fsolve
 # Library for plotting functions and (in our case) points
@@ -23,8 +23,7 @@ import numpy as np
 import math
 
 
-
-### Variable inputs for the user to alter
+# Variable inputs for the user to alter
 # Initial Temperature to examine - K
 Tstart = 300
 # End temperature to examine - K
@@ -37,8 +36,7 @@ k_f0 = 0.01
 T0 = 300
 
 
-
-### Permanent Constants
+# Permanent Constants
 # Total Concentration  - (kmol/m^3)
 c_T0 = 0.1
 # Volume of the reactor - m^3
@@ -51,16 +49,14 @@ num = 100
 R = 8.314
 
 
-
-### Values that are calculated from parameters
+# Values that are calculated from parameters
 # Calculation of initial concentrations
 #   Initial concentration of A
 c_A0 = 0.5 * c_T0
 
 
-
 # Temperature vector
-T_span = np.linspace(Tstart, Tend, num) 
+T_span = np.linspace(Tstart, Tend, num)
 
 # Conversion vector
 x = [None] * num
@@ -72,15 +68,15 @@ for i in range(num):
     # Get the forward reaction rate constant
     k_f = k_f0 * math.exp((Ea_f/R)*((1/T0) - (1/T)))
     # Algebraic equation
-    eqn = lambda x : Volume/volumetric_flowrate - x/(k_f*c_A0*(1 - x)**2)
+    def eqn(x): return Volume/volumetric_flowrate - x/(k_f*c_A0*(1 - x)**2)
     # Initial Guess for fsolve
     initial_guess = 0.99
     # Extract the conversion
     x[i] = fsolve(eqn, initial_guess)
 
-### Graphing stuff
+# Graphing stuff
 # Conversion as a function of spacetime
-plt.plot(T_span, x, 'b', label='Conversion')    
+plt.plot(T_span, x, 'b', label='Conversion')
 plt.legend(loc='best')
 plt.xlim(Tstart, Tend)
 plt.xlabel('Temperature (K)')

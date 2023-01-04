@@ -12,7 +12,7 @@
 #    A + B -> C
 #    rate = 0.01*cA*cB
 
-###Importing different libraries
+# Importing different libraries
 # Library for solving ODEs
 import scipy.integrate as integrator
 # Library for plotting functions and (in our case) points
@@ -23,8 +23,7 @@ import numpy as np
 import math
 
 
-
-###Variable inputs for the user to alter
+# Variable inputs for the user to alter
 # Initial temperature to examine - K
 Tstart = 300
 # End temperature to examine - K
@@ -37,18 +36,18 @@ k_f0 = 0.00001
 T0 = 300
 
 
-### Permanent Constants
+# Permanent Constants
 # Temperature for original k values - K
 T0 = 300
 # Total Concentration - (mol/m^3)
-c_T0 = 100 # 0.1 M
+c_T0 = 100  # 0.1 M
 # Initial Concentration of A and B
 c_A0 = 0.5 * c_T0
 c_B0 = 0.5 * c_T0
 # Volume of the reactor - m^3
-Volume = 0.350 #350 L
+Volume = 0.350  # 350 L
 # Initial Volumetric Flowrate - (m^3/s)
-volumetric_flowrate = 0.002 #2 L/s
+volumetric_flowrate = 0.002  # 2 L/s
 # Initial Molar Flowrates of A and B
 F_A0 = c_A0 * volumetric_flowrate
 F_B0 = c_B0 * volumetric_flowrate
@@ -58,9 +57,11 @@ R = 1.9872
 num = 101
 
 # ODE function for changing flow rates
+
+
 def deriv(Volume, F, k):
     """Function to be used in an odesolver
-    
+
     Parameters
     ----------
     Volume : float
@@ -73,7 +74,7 @@ def deriv(Volume, F, k):
         A tuple representing the rate constants being used for this particular 
         iteration, especially at the different temperature.  The structure is:
         (k of the forward reaction, k of the reverse reaction)
-        
+
     Returns
     -------
     list(float)
@@ -85,9 +86,9 @@ def deriv(Volume, F, k):
     # Unpacking the flowrates
     F_A, F_B = F
     # Concentration of A
-    c_A = F_A/volumetric_flowrate 
+    c_A = F_A/volumetric_flowrate
     # Concentration of B
-    c_B = F_B/volumetric_flowrate 
+    c_B = F_B/volumetric_flowrate
 
     # Rate at this particular point in the volume
     r = k*c_A*c_B
@@ -96,6 +97,7 @@ def deriv(Volume, F, k):
     dFdV = [-r, -r]
     return dFdV
 
+
 # Programming of the ODEsolver function
 #   Function definition replicating ode15s
 ode15s = integrator.ode(deriv)
@@ -103,6 +105,8 @@ ode15s.set_integrator('vode', method='bdf', order=15, nsteps=1e8)
 
 # Function to house the use of the ODE solver
 #   Generates the final conversions per iteration using different temperatures
+
+
 def iterative(T):
     """Function to act in iteration for each volumetric_flowrate
 
@@ -131,10 +135,11 @@ def iterative(T):
     array = [F_0, [sol[0], sol[1]]]
     return array
 
+
 # Temperature vector
-#   Spans from the start temperature specified to the end temperature 
+#   Spans from the start temperature specified to the end temperature
 #   specified, separated by the number of points specified (1000)
-T_span = np.linspace(Tstart, Tend, num) 
+T_span = np.linspace(Tstart, Tend, num)
 
 # Conversion vector
 x = [None] * num
@@ -146,8 +151,8 @@ for i in range(num):
     # Extract the conversion from the end
     x[i] = (iter[0][1] - iter[1][1])/iter[0][1]
 
-### Graphing stuff
-plt.plot(T_span, x, 'b', label='Conversion')    
+# Graphing stuff
+plt.plot(T_span, x, 'b', label='Conversion')
 plt.legend(loc='best')
 plt.xlim(Tstart, Tend)
 plt.xlabel('Temperature (K)')
