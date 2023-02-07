@@ -24,7 +24,7 @@ import numpy as np
 
 # Variable inputs for the user to alter
 # Coefficient to investigate
-n = 3.5
+n = 3
 
 
 # Permanent Constants
@@ -35,9 +35,7 @@ c_T0 = 100
 # Volume of the reactor - m^3
 volume = 0.350
 # Lower Volumetric Flowrate - m^3/s
-lower_flowrate = 0.00001
-# Upper Volumetric Flowrate - m^3/s
-upper_flowrate = 10
+v_0 = 0.00001
 # Number of elements to plot
 num = 100
 
@@ -46,112 +44,62 @@ num = 100
 # Calculation of initial concentrations
 c_A0 = 0.5 * c_T0
 c_B0 = 0.5 * c_T0
-spacetime_start = volume / upper_flowrate
-spacetime_end = volume / lower_flowrate
-spacetime_span = np.linspace(spacetime_start, spacetime_end, num)
+c_C0 = 0
+F_A0 = c_A0 * v_0
+F_B0 = c_B0 * v_0
+F_C0 = c_C0 * v_0
+F_T0 = F_A0 + F_B0 + F_C0
 
-conversion_basis = [
-    1.7499241517157317e-05, 0.1502267981133905, 0.2612058884719971, 0.3465455301501841, 0.414210688277733, 0.4691771009245152, 0.5147139042461059, 0.5530550357402704, 0.585780171407869, 0.6140403764163188, 0.6386899022306443, 0.6603805979249234, 0.6796145133795515, 0.6967865155275922, 0.712211487774843, 0.7261428890498782, 0.7387875052979261, 0.7503159159810814, 0.7608699794013326, 0.7705681181156898, 0.779510238350729, 0.7877814492482593, 0.7954545815289086, 0.8025922299958015, 0.8092485262071847, 0.8154705765751966, 0.8212995482383247, 0.8267715490946894, 0.8319183912533238, 0.8367682184343626, 0.8413460222877002, 0.8456740660078944, 0.8497722318383304, 0.8536583537495859, 0.8573484837514791, 0.8608570901311107, 0.864197250844646, 0.8673808241497564, 0.8704185561474554, 0.8733202426291657, 0.8760948177499593, 0.8787504587736301, 0.8812946552438842, 0.8837342779536708, 0.8860756437885755, 0.8883245709956753, 0.890486427703738, 0.8925661739468943, 0.8945684003756833, 0.8964973619247629, 0.8983570087084405, 0.9001510092993144, 0.901882774429094, 0.9035554907990088, 0.9051721194251173, 0.9067354494219388, 0.9082480612281765, 0.909712400711437, 0.9111307311708882, 0.9125051970945526, 0.9138377944356145, 0.9151304101660706, 0.9163848139301336, 0.9176026780853579, 0.9187855723117252, 0.9199349856646863, 0.9210523164102522, 0.92213889319028, 0.9231959656997392, 0.9242247220514175, 0.9252262829055174, 0.9262017140050581, 0.9271520231071709, 0.9280781696130093, 0.9289810620757131, 0.9298615668083108, 0.9307205050188039, 0.9315586607799408, 0.9323767782621104, 0.9331755685835744, 0.9339557077538695, 0.9347178419047603, 0.9354625849499286, 0.9361905266001553, 0.9369022305772017, 0.9375982283522132, 0.9382790388291344, 0.9389451580456484, 0.939597046791151, 0.9402351627344165, 0.9408599418908397, 0.9414717904555135, 0.9420711096774365, 0.942658282461978, 0.943233671071089, 0.9437976271632356, 0.9443504888388962, 0.9448925792185238, 0.9454242099861352, 0.9459456819633106]
+initial_conditions = [F_A0, F_B0, F_C0]
+
+conversion_basis = [0.0, 0.1601764918147195, 0.29281267508514985, 0.4013934247083134, 0.4898800369150772, 0.5623928460854468, 0.6213454631183273, 0.6691514989126237, 0.7082245643672409, 0.7406120271404572, 0.7678656354590265, 0.790839307676598, 0.8102109495234008, 0.8266584667296639, 0.8408178801263928, 0.8530840338459089, 0.863876698742834, 0.8733637069555324, 0.8817128906223685, 0.8890920818817065, 0.895669112871911, 0.9015614992871734, 0.9068900401998041, 0.911742495901042, 0.9161600724693791, 0.920183975983308, 0.923855412521321, 0.9272155881619103, 0.9303057089835682, 0.9331669810647872, 0.9358003995739377, 0.9382349414086054, 0.9405179694584148, 0.94265785811776, 0.9446629817810352, 0.9465417148426348, 0.9483024316969527, 0.9499535067383833, 0.9515033143613207, 0.9529602289601592, 0.9543326249292928, 0.9556288766631158, 0.9568573585560225, 0.958026445002407, 0.9591445103966634, 0.9601835508187004, 0.961172446193365, 0.9621210568578217, 0.9630307575053061, 0.9639029228290535,
+                    0.9647389275222997, 0.9655401462782799, 0.9663079537902297, 0.9670437247513846, 0.9677488338549799, 0.9684246557942514, 0.9690725652624343, 0.9696939369527643, 0.9702901455584768, 0.9708625657728073, 0.9714125722889911, 0.971941539800264, 0.9724508429998613, 0.9729418565810185, 0.9734159552369711, 0.9738745136609546, 0.9743189065462045, 0.9747505085859562, 0.9751634983405524, 0.9755637117679327, 0.9759528931914234, 0.9763313150212133, 0.9766992496674914, 0.9770569695404467, 0.977404747050268, 0.9777428546071443, 0.9780715646212643, 0.9783911495028174, 0.978701881661992, 0.9790040335089775, 0.9792978774539625, 0.979583685907136, 0.9798617312786869, 0.9801322859788043, 0.980395622417677, 0.9806520130054939, 0.9809017301524439, 0.981145046268716, 0.9813822337644992, 0.9816135650499822, 0.9818393125353542, 0.9820597486308039, 0.9822751457465204, 0.9824857762926925, 0.9826919126795093, 0.9828938273171595, 0.9830917926158321, 0.983286080985716, 0.9834769648370003, 0.9836647165798738, 0.9838496086245254]
 
 # ODE function for changing flow rates
 
 
-def deriv(Volume, F, flowrate):
-    """Function to be used in an odesolver
-
-    Parameters
-    ----------
-    Volume : float
-        Value used by the odesolver.  Akin to "t" in normal context and usage.
-        Represents the slice of volume of the PFR 
-    F : (float, float, float)
-        Tuple of three objects representing the current values of:
-        (the flowrate of A, the flowrate of B, the flowrate of R)
-    n : float
-        The coefficient of R in the chemical equation.  Also affects the rate.
-
-    Returns
-    -------
-    list(float)
-        A list of floats that represent the change in the flowrates of the 
-        different species per volume in the form:
-            [dF_A/dV, dF_B/dV, dF_C/dV]
-    """
+def dFdV(Volume, F):
 
     # Unpacking the flowrates at the current volume
-    F_A, F_B = F
+    F_A, F_B, F_C = F
+    F_T = F_A + F_B + F_C
+
+    volumetric_flowrate = v_0 * (F_T / F_T0)
     # Concentration of A
-    c_A = F_A/flowrate
+    c_A = F_A / volumetric_flowrate
     # Concentration of B
-    c_B = F_B/flowrate
+    c_B = F_B / volumetric_flowrate
 
     # Rate at this particular point in the volume
-    r = k * c_A * (c_B ** n)
+    r = k * c_A * c_B
 
     # List of differentials to be returned
-    dFdV = [-r, -r]
+    dFdV = [-r, -r, n * r]
     return dFdV
 
 
-# Programming of the ODEsolver function
-# Function definition replicating ode15s
-ode15s = integrator.ode(deriv)
-ode15s.set_integrator('vode', method='bdf', order=15, nsteps=1e8)
+v_bounds = [0, volume]
+v_span = np.linspace(0, volume, 101)
 
-# Function to house the use of the ODE solver
-# Generates the final conversions per iteration using different coefficients of
-#   B
+sol = integrator.solve_ivp(dFdV, v_bounds, initial_conditions,
+                           t_eval=v_span, dense_output=True, method='Radau')
 
+F_A, F_B, F_C = sol.y
+conversion = [1 - f_A / F_A0 for f_A in F_A]
 
-def iterative(spacetime):
-    """Function to act in iteration for each volumetric_flowrate
+v = [v_0 * (f_A + f_B + f_C) / F_T0 for f_A, f_B, f_C in zip(F_A, F_B, F_C)]
 
-    Parameters
-    ----------
-    n : float
-        The coefficient of B in the chemical equation.  This also affects the rate law
-
-    Returns
-    -------
-    list
-        List of values that house the initial conditions that were fed into the 
-        ODE Solver, followed by the resulting values that were calculated by 
-        the ODE Solver
-    """
-    flowrate = volume / spacetime
-
-    F_0 = [flowrate*c_A0, flowrate * c_B0]
-    ode15s.set_initial_value(F_0, 0)
-    ode15s.set_f_params(flowrate)
-    # Only returns the last iteration of ode15s
-    sol = ode15s.integrate(volume)
-    array = [F_0, [sol[0], sol[1]]]
-    return array
-
-
-# Conversion vector
-x = [None] * num
-
-# For loop for iterative function
-for i in range(num):
-    # Feed in the current volumetric flowrate
-    iter = iterative(spacetime_span[i])
-    # Extract the conversion
-    x[i] = (iter[0][1] - iter[1][1])/iter[0][1]
+spacetime = [volume_i / v_i for volume_i, v_i in zip(sol.t, v)]
 
 # Graphing stuff
 # Conversion as a function of spacetime
-plt.plot(spacetime_span, conversion_basis, 'b', label='Coefficient of B = 1')
-label = 'Coefficient of B = {}'.format('{:f}'.format(n).rstrip('.0'))
-plt.plot(spacetime_span, x, 'r', label=label)
+plt.plot(spacetime, conversion_basis, 'b', label='Coefficient of C = 1')
+label = 'Coefficient of C = {}'.format('{:f}'.format(n).rstrip('.0'))
+plt.plot(spacetime, conversion, 'r', label=label)
 plt.legend(loc='best')
-plt.xlim(spacetime_start, spacetime_end)
+plt.xlim(spacetime[0], spacetime[-1])
 plt.xlabel('Spacetime (s)')
 plt.ylim(0, 1)
-plt.ylabel('Conversion')
-plt.title('PFR-Epsilon')
+plt.ylabel('Conversion of A')
 plt.grid()
 plt.show()
-
-conversion_basis.reverse()
-print(conversion_basis)
