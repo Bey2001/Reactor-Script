@@ -63,15 +63,18 @@ class CSTRAdiabaticApiHandler(CSTREnergyBalanceApiHandler):
         parser = reqparse.RequestParser()
 
         # Parse the query args
-        parser.add_argument('lowerTemp', type=float)
-        parser.add_argument('upperTemp', type=float)
-        parser.add_argument('cA', type=float)
-        parser.add_argument('hfA', type=float)
-        parser.add_argument('cB', type=float)
-        parser.add_argument('hfB', type=float)
-        parser.add_argument('hfC', type=float)
+        # Need to add location='args' for all add_arguments for Linux to work
+        parser.add_argument('lowerTemp', type=float, location='args')
+        parser.add_argument('upperTemp', type=float, location='args')
+        parser.add_argument('cA', type=float, location='args')
+        parser.add_argument('hfA', type=float, location='args')
+        parser.add_argument('cB', type=float, location='args')
+        parser.add_argument('hfB', type=float, location='args')
+        parser.add_argument('hfC', type=float, location='args')
 
         args = parser.parse_args()
+
+        print("Args have been parsed")
 
         # Variable inputs for the user to alter
         # Initial Temperature - K
@@ -132,7 +135,7 @@ class CSTRAdiabaticApiHandler(CSTREnergyBalanceApiHandler):
 
         # https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
         return send_file(plot,
-                         attachment_filename='plot.png',
+                        #  attachment_filename='plot.png',
                          mimetype='image/png')
 
     def plot(self, t_start, t_end, delta_H_A, cp_A, delta_H_B, cp_B, delta_H_C):
@@ -199,11 +202,11 @@ class CSTRHeatExchangerApiHandler(CSTREnergyBalanceApiHandler):
         parser = reqparse.RequestParser()
 
         # Parse the query args
-        parser.add_argument('lowerTemp', type=float)
-        parser.add_argument('upperTemp', type=float)
-        parser.add_argument('u', type=float)
-        parser.add_argument('a', type=float)
-        parser.add_argument('tSurface', type=float)
+        parser.add_argument('lowerTemp', type=float, location='args')
+        parser.add_argument('upperTemp', type=float, location='args')
+        parser.add_argument('u', type=float, location='args')
+        parser.add_argument('a', type=float, location='args')
+        parser.add_argument('tSurface', type=float, location='args')
 
         args = parser.parse_args()
 
@@ -245,7 +248,7 @@ class CSTRHeatExchangerApiHandler(CSTREnergyBalanceApiHandler):
 
         # https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
         return send_file(plot,
-                         attachment_filename='plot.png',
+                        #  attachment_filename='plot.png',
                          mimetype='image/png')
 
     def plot(self, t_start, t_end, u, a, t_surface):
@@ -297,9 +300,9 @@ class CSTRSpacetimeApiHandler(Resource):
         parser = reqparse.RequestParser()
 
         # Parse the query args
-        parser.add_argument('lowerFlowrate', type=float)
-        parser.add_argument('upperFlowrate', type=float)
-        parser.add_argument('volume', type=float)
+        parser.add_argument('lowerFlowrate', type=float, location='args')
+        parser.add_argument('upperFlowrate', type=float, location='args')
+        parser.add_argument('volume', type=float, location='args')
 
         args = parser.parse_args()
 
@@ -329,7 +332,7 @@ class CSTRSpacetimeApiHandler(Resource):
 
         # https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
         return send_file(plot,
-                         attachment_filename='plot.png',
+                        #  attachment_filename='plot.png',
                          mimetype='image/png')
 
     def plot(self, flow_start, flow_end, volume):
@@ -394,11 +397,11 @@ class CSTRTempApiHandler(Resource):
         parser = reqparse.RequestParser()
 
         # Parse the query args
-        parser.add_argument('lowerTemp', type=float)
-        parser.add_argument('upperTemp', type=float)
-        parser.add_argument('eA', type=float)
-        parser.add_argument('k', type=float)
-        parser.add_argument('tRef', type=float)
+        parser.add_argument('lowerTemp', type=float, location='args')
+        parser.add_argument('upperTemp', type=float, location='args')
+        parser.add_argument('eA', type=float, location='args')
+        parser.add_argument('k', type=float, location='args')
+        parser.add_argument('tRef', type=float, location='args')
 
         args = parser.parse_args()
 
@@ -440,7 +443,7 @@ class CSTRTempApiHandler(Resource):
 
         # https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
         return send_file(plot,
-                         attachment_filename='plot.png',
+                        #  attachment_filename='plot.png',
                          mimetype='image/png')
 
     def plot(self, t_start, t_end, e_a, k, t_ref):
@@ -509,7 +512,7 @@ class CSTRVarCoApiHandler(Resource):
         parser = reqparse.RequestParser()
 
         # Parse the query args
-        parser.add_argument('coefficient', type=float)
+        parser.add_argument('coefficient', type=float, location='args')
 
         args = parser.parse_args()
 
@@ -525,7 +528,7 @@ class CSTRVarCoApiHandler(Resource):
 
         # https://stackoverflow.com/questions/50728328/python-how-to-show-matplotlib-in-flask
         return send_file(plot,
-                         attachment_filename='plot.png',
+                        #  attachment_filename='plot.png',
                          mimetype='image/png')
 
     def plot(self, coefficient):

@@ -7,6 +7,7 @@ import Snackbar from "@mui/material/Snackbar";
 import axios from "axios";
 
 import ReactorStack from "../../ReactorStack/ReactorStack";
+import { backend } from "../../../Globals/config"
 
 import "./CSTR.css";
 
@@ -447,7 +448,7 @@ class CSTRAdiabatic extends Component {
       let hfC = "" + this.state.values.hfC;
 
       axios
-        .get("http://localhost:5000/cstr/adiabatic", {
+        .get(backend + "/cstr/adiabatic", {
           params: {
             lowerTemp: lowerTemp,
             upperTemp: upperTemp,

@@ -7,6 +7,7 @@ import Snackbar from "@mui/material/Snackbar";
 import axios from "axios";
 
 import ReactorStack from "../../ReactorStack/ReactorStack";
+import { backend } from "../../../Globals/config"
 
 import "./PFR.css";
 
@@ -220,7 +221,7 @@ class PFRSpacetime extends Component {
       let upperFlowrate = this.state.values.upperFlowrate;
 
       axios
-        .get("http://localhost:5000/pfr/spacetime", {
+        .get(backend + "/pfr/spacetime", {
           params: {
             volume: volume,
             lowerFlowrate: lowerFlowrate,

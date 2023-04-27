@@ -7,6 +7,7 @@ import Snackbar from "@mui/material/Snackbar";
 import axios from "axios";
 
 import ReactorStack from "../../ReactorStack/ReactorStack";
+import { backend } from "../../../Globals/config"
 
 class PFRTemp extends Component {
   constructor() {
@@ -317,7 +318,7 @@ class PFRTemp extends Component {
       let tRef = "" + this.state.values.tRef;
 
       axios
-        .get("http://localhost:5000/pfr/temp", {
+        .get(backend + "/pfr/temp", {
           params: {
             lowerTemp: lowerTemp,
             upperTemp: upperTemp,

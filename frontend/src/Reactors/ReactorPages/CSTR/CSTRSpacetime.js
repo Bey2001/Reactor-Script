@@ -7,6 +7,7 @@ import Snackbar from "@mui/material/Snackbar";
 import axios from "axios";
 
 import ReactorStack from "../../ReactorStack/ReactorStack";
+import { backend } from "../../../Globals/config"
 
 import "./CSTR.css";
 
@@ -222,7 +223,7 @@ class CSTRSpacetime extends Component {
       let upperFlowrate = this.state.values.upperFlowrate;
 
       axios
-        .get("http://localhost:5000/cstr/spacetime", {
+        .get(backend + "/cstr/spacetime", {
           params: {
             volume: volume,
             lowerFlowrate: lowerFlowrate,
