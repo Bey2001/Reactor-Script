@@ -8,6 +8,8 @@ import axios from "axios";
 
 import ReactorStack from "../../ReactorStack/ReactorStack";
 
+import { backend } from "../../../Globals/config";
+
 import "./CSTR.css";
 
 // Have each CSTR* be a stateful component with the specific fields necessary being stored.  This should allow editing using the old data as a basis
@@ -318,7 +320,7 @@ class CSTRExchanger extends Component {
       let tSurface = "" + this.state.values.tSurface;
 
       axios
-        .get("http://localhost:5000/cstr/exchanger", {
+        .get(backend + "/cstr/exchanger", {
           params: {
             lowerTemp: lowerTemp,
             upperTemp: upperTemp,

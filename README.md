@@ -12,3 +12,9 @@ conda install
 ```
 
 Run ``conda create --name <desired name> python`` to make a new conda environment.  Then, run ``conda activate reactors``.  You should now be in the reactors python environment.
+
+# Running publicly
+- For the frontend
+    - ``HOST=172.21.138.38 npm run start``
+- For the backend
+    - ``flask run --host=172.21.138.38``

@@ -7,6 +7,8 @@ import Snackbar from "@mui/material/Snackbar";
 import axios from "axios";
 
 import ReactorStack from "../../ReactorStack/ReactorStack";
+import { backend } from "../../../Globals/config"
+
 
 import "./CSTR.css";
 
@@ -321,7 +323,7 @@ class CSTRTemp extends Component {
       let tRef = "" + this.state.values.tRef;
 
       axios
-        .get("http://localhost:5000/cstr/temp", {
+        .get(backend + "/cstr/temp", {
           params: {
             lowerTemp: lowerTemp,
             upperTemp: upperTemp,

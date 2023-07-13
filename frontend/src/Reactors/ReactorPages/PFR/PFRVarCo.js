@@ -7,6 +7,7 @@ import Snackbar from "@mui/material/Snackbar";
 import axios from "axios";
 
 import ReactorStack from "../../ReactorStack/ReactorStack";
+import { backend } from "../../../Globals/config"
 
 class PFRVarCo extends Component {
   constructor() {
@@ -122,7 +123,7 @@ class PFRVarCo extends Component {
       let coefficient = this.state.values.coefficient;
 
       axios
-        .get("http://localhost:5000/pfr/varco", {
+        .get(backend + "/pfr/varco", {
           params: {
             coefficient: coefficient,
           },
